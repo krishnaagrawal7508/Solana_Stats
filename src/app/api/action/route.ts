@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
             actions: [
                 {
                     label: `Calculate for 0.01 SOL`,
-                    href: `https://solana-stats.vercel.app/api/action`, // this href will have a text input
+                    href: `/api/action`, // this href will have a text input
                 },
             ],
         },
