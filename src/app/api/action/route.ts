@@ -16,9 +16,6 @@ import {
     createPostResponse,
     ActionGetResponse,
 } from "@solana/actions";
-import { config } from "dotenv";
-import { NextActionLink } from "@solana/actions-spec";
-import { useSearchParams } from "next/navigation";
 import { getCompletedAction } from "../../helper";
 
 const connection = new Connection("https://devnet.helius-rpc.com/?api-key=3756ece7-8ccb-4586-bb9d-9637825f3395");
