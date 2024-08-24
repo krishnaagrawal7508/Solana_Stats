@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
         </svg>
     `;
 
-    const fixedImageBuffer = await sharp('overall_blank.png').toBuffer();
+    const fixedImageBuffer = await sharp('/overall_blank.png').toBuffer();
     const x = (500 - width) / 2;
     const y = 240;
 
