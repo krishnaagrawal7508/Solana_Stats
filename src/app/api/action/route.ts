@@ -59,24 +59,25 @@ export async function POST(req: NextRequest) {
         );
         tx.feePayer = sender;
 
-        const response = await fetch('https://solana-stats.vercel.app/api/generateImage', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                wallet: senderaddress,
-            }),
-        });
-        const data = await response.json();
-        console.log(data.url);
+        // const response = await fetch('https://solana-stats.vercel.app/api/generateImage', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({
+        //         wallet: senderaddress,
+        //     }),
+        // });
+        // const data = await response.json();
+        // console.log(data.url);
         tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
 
         const payload = await createPostResponse({
             fields: {
                 links: {
                     // any condition to determine the next action
-                    next: getCompletedAction(data.url),
+                    // next: getCompletedAction(data.url),
+                    next: getCompletedAction("https://i.postimg.cc/PxsYgXMp/Screenshot-2024-08-24-155147.png"),
                 },
                 transaction: tx,
                 message: `Done!`,
