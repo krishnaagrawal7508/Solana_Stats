@@ -8,8 +8,6 @@ import {
     Connection,
     clusterApiUrl,
     LAMPORTS_PER_SOL,
-    Keypair,
-    sendAndConfirmTransaction
 } from "@solana/web3.js";
 import {
     ACTIONS_CORS_HEADERS,
@@ -31,7 +29,7 @@ export async function GET(req: NextRequest) {
             actions: [
                 {
                     label: `Calculate for 0.01 SOL`,
-                    href: `/api/action`, // this href will have a text input
+                    href: `https://solana-stats.vercel.app/api/action`, // this href will have a text input
                 },
             ],
         },
@@ -60,7 +58,6 @@ export async function POST(req: NextRequest) {
             })
         );
         tx.feePayer = sender;
-        tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
 
         const response = await fetch('https://solana-stats.vercel.app/api/generateImage', {
             method: 'POST',
@@ -73,6 +70,7 @@ export async function POST(req: NextRequest) {
         });
         const data = await response.json();
         console.log(data.url);
+        tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
 
         const payload = await createPostResponse({
             fields: {

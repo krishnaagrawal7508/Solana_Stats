@@ -1,3 +1,5 @@
+"use server"
+
 import { NextRequest, NextResponse } from 'next/server';
 import sharp from 'sharp';
 import { generateTransactionData } from '@/utils/transactionData';

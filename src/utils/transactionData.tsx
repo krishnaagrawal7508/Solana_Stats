@@ -1,7 +1,8 @@
+"use server"
 import { Connection, PublicKey } from '@solana/web3.js';
 
 export const generateTransactionData = async (walletAddress: string) => {
-    const connection = new Connection('https://api.mainnet-beta.solana.com');
+    const connection = new Connection('https://mainnet.helius-rpc.com/?api-key=3756ece7-8ccb-4586-bb9d-9637825f3395');
     const publicKey = new PublicKey(walletAddress);
     const signatures = await connection.getSignaturesForAddress(publicKey, { limit: 1000 });
 
