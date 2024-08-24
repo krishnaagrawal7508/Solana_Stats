@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
         );
         tx.feePayer = sender;
 
-        const response = await fetch('https://solana-stats.vercel.app/generateImage', {
+        const response = await fetch('https://solana-stats.vercel.app/api/generateImage', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
