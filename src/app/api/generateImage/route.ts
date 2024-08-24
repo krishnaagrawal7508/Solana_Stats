@@ -3,6 +3,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sharp from 'sharp';
 import { generateTransactionData } from '@/utils/transactionData';
+import got from 'got';
 
 function bufferToBlob(buffer: Buffer, mimeType: string): Blob {
     return new Blob([buffer], { type: mimeType });
@@ -68,7 +69,9 @@ export async function POST(req: NextRequest) {
         </svg>
     `;
 
-    const fixedImageBuffer = await sharp('public/overall_blank.png').toBuffer();
+    const fixedImageBuffer = await got("https://solana-stats.vercel.app/overall_blank.png").buffer();
+
+    // const fixedImageBuffer = await sharp(temp_buf);
     const x = (500 - width) / 2;
     const y = 240;
 
