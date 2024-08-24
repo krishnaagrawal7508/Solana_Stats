@@ -76,8 +76,7 @@ export async function POST(req: NextRequest) {
             fields: {
                 links: {
                     // any condition to determine the next action
-                    // next: getCompletedAction(data.url),
-                    next: getCompletedAction("https://i.postimg.cc/PxsYgXMp/Screenshot-2024-08-24-155147.png"),
+                    next: getCompletedAction(data.url),
                 },
                 transaction: tx,
                 message: `Done!`,
