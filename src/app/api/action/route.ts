@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
             actions: [
                 {
                     label: `Calculate for 0.01 SOL`,
-                    href: `http://localhost:3000/api/action`, // this href will have a text input
+                    href: `https://solana-stats.vercel.app/api/action`, // this href will have a text input
                 },
             ],
         },
@@ -49,8 +49,6 @@ export async function POST(req: NextRequest) {
     try {
         const body = (await req.json()) as { account: string; signature: string };
 
-        const { searchParams } = new URL(req.url);
-
         const sender = new PublicKey(body.account);
         const senderaddress = sender.toBase58();
 
@@ -64,7 +62,7 @@ export async function POST(req: NextRequest) {
         tx.feePayer = sender;
         tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
 
-        const response = await fetch('http://localhost:3000/api/generateImage', {
+        const response = await fetch('https://solana-stats.vercel.app/api/generateImage', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

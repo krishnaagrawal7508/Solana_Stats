@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import sharp from 'sharp';
 import { generateTransactionData } from '@/utils/transactionData';
-import { promises as fs } from 'fs';
-import path from 'path';
 
 function bufferToBlob(buffer: Buffer, mimeType: string): Blob {
     return new Blob([buffer], { type: mimeType });
