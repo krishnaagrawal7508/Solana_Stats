@@ -18,7 +18,6 @@ export const generateTransactionData = async (walletAddress: string) => {
     const transactionData: Record<string, number> = {};
 
     let total_transactions = signatures.length;
-    console.log(total_transactions);
     // Count transactions per day
     for (const { blockTime } of signatures) {
         if (blockTime) {
@@ -45,5 +44,5 @@ export const generateTransactionData = async (walletAddress: string) => {
     }));
 
     console.log(formattedData);
-    return formattedData;
+    return [formattedData, total_transactions];
 };

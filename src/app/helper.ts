@@ -7,7 +7,7 @@ export const getCompletedAction = (dataURL: string): NextActionLink => {
     action: {
       icon: `${dataURL}`,
       label: `DONE`,
-      title: `Check Your Solana Stats`,
+      title: `Flex Your Solana Stats`,
       description: "",
       type: "completed",
     },

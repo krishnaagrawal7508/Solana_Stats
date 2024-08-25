@@ -41,14 +41,14 @@ export async function POST(req: NextRequest) {
         return new NextResponse('Wallet address is required', { status: 400 });
     }
 
-    const transactionData = await generateTransactionData(walletAddress);
+    const [transactionData, totalTransaaction] = await generateTransactionData(walletAddress);
     const daySize = 9; // Size of each day square
     const gap = 1; // Gap between squares
     const daysInWeek = 7;
     const totalWeeks = 35;
 
     const width = totalWeeks * (daySize + gap) + 30; // Width of the entire year
-    const height = daysInWeek * (daySize + gap); // Height of the days in a week
+    const height = daysInWeek * (daySize + gap) + 100; // Height of the days in a week
 
     // Ensure all days of the year are included, even if there are no transactions
     // const startOfYear = new Date(2024, 0, 1);
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     const svg = `
         <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
             ${Object.entries(transactionData).map(([date, countObj], index) => {
-        const count = Object.values(countObj)[0]; // Extract count from the object
+        const count = Object.values(countObj)[0] as number; // Extract count from the object
         const dayIndex = new Date(date).getDay(); // Get day of the week
         const weekIndex = Math.floor(index / daysInWeek);
         const day = index % daysInWeek;
@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
         const color = getColor(count);
         return `<rect x="${x}" y="${y}" width="${daySize}" height="${daySize}" fill="${color}" />`;
     }).join('')}
+    <text x="140" y="130" font-size="1.2em" fill="#1d6fff" font-weight="bold" font-family="Arial, Helvetica, sans-serif">Total Txns: ${totalTransaaction}</text>
         </svg>
     `;
 
