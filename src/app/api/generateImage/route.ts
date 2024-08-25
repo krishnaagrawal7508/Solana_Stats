@@ -42,17 +42,17 @@ export async function POST(req: NextRequest) {
     }
 
     const transactionData = await generateTransactionData(walletAddress);
-    const daySize = 7; // Size of each day square
+    const daySize = 9; // Size of each day square
     const gap = 1; // Gap between squares
     const daysInWeek = 7;
-    const totalWeeks = 52;
+    const totalWeeks = 35;
 
     const width = totalWeeks * (daySize + gap) + 30; // Width of the entire year
     const height = daysInWeek * (daySize + gap); // Height of the days in a week
 
     // Ensure all days of the year are included, even if there are no transactions
-    const startOfYear = new Date(2024, 0, 1);
-    const endOfYear = new Date(2024, 11, 31);
+    // const startOfYear = new Date(2024, 0, 1);
+    // const endOfYear = new Date(2024, 11, 31);
 
     const svg = `
         <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">

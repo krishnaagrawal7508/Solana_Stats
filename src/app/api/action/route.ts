@@ -16,8 +16,8 @@ import {
 } from "@solana/actions";
 import { getCompletedAction } from "../../helper";
 
-// const connection = new Connection("https://devnet.helius-rpc.com/?api-key=3756ece7-8ccb-4586-bb9d-9637825f3395");
-const connection = new Connection("https://mainnet.helius-rpc.com/?api-key=3756ece7-8ccb-4586-bb9d-9637825f3395");
+const connection = new Connection("https://devnet.helius-rpc.com/?api-key=3756ece7-8ccb-4586-bb9d-9637825f3395");
+// const connection = new Connection("https://mainnet.helius-rpc.com/?api-key=3756ece7-8ccb-4586-bb9d-9637825f3395");
 
 export async function GET(req: NextRequest) {
     let response: ActionGetResponse = {
@@ -30,6 +30,7 @@ export async function GET(req: NextRequest) {
             actions: [
                 {
                     label: `Calculate for 0.01 SOL`,
+                    // href: `http://localhost:3000/api/action`, // this href will have a text input
                     href: `https://solana-stats.vercel.app/api/action`, // this href will have a text input
                 },
             ],
