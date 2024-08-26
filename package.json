@@ -6,10 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prod": "next build && next start"
   },
   "dependencies": {
-    "@solana/actions": "^1.6.2",
+    "@solana/actions": "1.6.3",
     "@solana/web3.js": "^1.95.3",
     "axios": "^1.7.5",
     "got": "^14.4.2",
@@ -20,7 +21,7 @@
     "sharp": "^0.33.5"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "22.5.0",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
