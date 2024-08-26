@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
         const color = getColor(count);
         return `<rect x="${x}" y="${y}" width="${daySize}" height="${daySize}" fill="${color}" />`;
     }).join('')}
-    <text x="140" y="130" font-size="1.2em" fill="#1d6fff" font-weight="bold" font-family="Arial, Helvetica, sans-serif">Total Txns: ${totalTransaaction}</text>
+    <text x="140" y="130" font-size="1.2em" fill="#1d6fff" font-weight="bold" >Total Txns: ${totalTransaaction}</text>
         </svg>
     `;
 
