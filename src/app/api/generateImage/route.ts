@@ -33,6 +33,29 @@ const uploadImageToCloudinary = async (imageBuffer: Buffer): Promise<string> => 
     }
 };
 
+function getWeekNumber(date: Date): number {
+    // Clone the date object to avoid mutating the original date
+    const newDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+
+    // Set the day to Thursday in the current week
+    newDate.setUTCDate(newDate.getUTCDate() + 4 - (newDate.getUTCDay() || 7));
+
+    // Get the first day of the year
+    const yearStart = new Date(Date.UTC(newDate.getUTCFullYear(), 0, 1));
+
+    // Calculate the week number
+    const weekNo = Math.ceil((((newDate.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+
+    return weekNo;
+}
+
+function getDaysFromStartOfYear(date: Date): number {
+    const startOfYear = new Date(date.getFullYear(), 0, 1); // January 1st of the same year
+    const diffInTime = date.getTime() - startOfYear.getTime();
+    const diffInDays = Math.floor(diffInTime / (1000 * 3600 * 24));
+    return diffInDays + 1; // +1 to include the start day
+}
+
 export async function POST(req: NextRequest) {
 
     const { wallet } = await req.json();
@@ -57,12 +80,20 @@ export async function POST(req: NextRequest) {
     const svg = `
         <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
             ${Object.entries(transactionData).map(([date, countObj], index) => {
-        const count = Object.values(countObj)[0] as number; // Extract count from the object
-        const dayIndex = new Date(date).getDay(); // Get day of the week
-        const weekIndex = Math.floor(index / daysInWeek);
-        const day = index % daysInWeek;
+        // console.log(date);
+
+        const [dateString, count] = Object.entries(countObj)[0] as [string, number];
+        const [year, month, day] = dateString.split('-').map(Number);
+        // console.log(count);
+
+        const date__ = new Date(year, month - 1, day);
+        const dayTotal = getDaysFromStartOfYear(date__);
+        const weekIndex = getWeekNumber(date__);
+        const day_index = (dayTotal % 7 === 0) ? 7 : dayTotal % 7;
+
+
         const x = weekIndex * (daySize + gap);
-        const y = day * (daySize + gap);
+        const y = day_index * (daySize + gap);
         const color = getColor(count);
         return `<rect x="${x}" y="${y}" width="${daySize}" height="${daySize}" fill="${color}" />`;
     }).join('')}
@@ -98,9 +129,8 @@ export async function POST(req: NextRequest) {
 }
 
 const getColor = (transactions: number) => {
-    if (transactions >= 70) return '#1b63fc'; // Dark Blue
-    if (transactions >= 51) return '#7A9CF6'; // Dark Blue
-    if (transactions >= 11) return '#c8dbfc'; // Blue
-    if (transactions >= 0) return '#e3edff';  // Light Blue
-    return '#E0E0E0'; // No transactions (White)
+    if (transactions >= 20) return '#1b63fc'; // Dark Blue
+    if (transactions >= 10) return '#7A9CF6'; // Blue
+    if (transactions > 0) return '#c8dbfc'; // light Blue
+    return '#e3edff'; // No transactions (lightest blue)
 };
