@@ -4,7 +4,8 @@ import { Connection, PublicKey, ConfirmedSignatureInfo, clusterApiUrl } from '@s
 export const generateTransactionData = async (walletAddress: string) => {
     // const connection = new Connection('https://mainnet.helius-rpc.com/?api-key=3756ece7-8ccb-4586-bb9d-9637825f3395');
     // const connection = new Connection('https://mainnet.helius-rpc.com/?api-key=5335ab3f-9c1d-413b-ab8b-da4069b18971');
-    const connection = new Connection(clusterApiUrl("mainnet-beta"));
+    const connection = new Connection('https://wispy-skilled-diamond.solana-mainnet.quiknode.pro/675c3e2fdf7c3d5426619c95a25c5521d408a6b7');
+    // const connection = new Connection(clusterApiUrl("mainnet-beta"));
     const publicKey = new PublicKey(walletAddress);
 
     let fetchedTransactions = await connection.getSignaturesForAddress(publicKey, { limit: 1000 });
