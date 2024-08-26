@@ -12,13 +12,15 @@
   "dependencies": {
     "@solana/actions": "1.6.3",
     "@solana/web3.js": "^1.95.3",
+    "@types/text-to-svg": "^3.1.4",
     "axios": "^1.7.5",
     "got": "^14.4.2",
     "next": "14.2.6",
     "path": "^0.12.7",
     "react": "^18",
     "react-dom": "^18",
-    "sharp": "^0.33.5"
+    "sharp": "^0.33.5",
+    "text-to-svg": "^3.1.5"
   },
   "devDependencies": {
     "@types/node": "22.5.0",

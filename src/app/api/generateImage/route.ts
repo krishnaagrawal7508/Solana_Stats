@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import sharp from 'sharp';
 import { generateTransactionData } from '@/utils/transactionData';
 import got from 'got';
+import TextToSVG from 'text-to-svg';
 
 function bufferToBlob(buffer: Buffer, mimeType: string): Blob {
     return new Blob([buffer], { type: mimeType });
@@ -75,7 +76,12 @@ export async function POST(req: NextRequest) {
 
     // Ensure all days of the year are included, even if there are no transactions
     // const startOfYear = new Date(2024, 0, 1);
-    // const endOfYear = new Date(2024, 11, 31);
+    // const endOfYear = new Date(2024, 11, 31)
+    console.log("hi");
+
+    const svgLib = TextToSVG.loadSync("./sans_serif.ttf");
+    const path_svg = svgLib.getPath(`Total Txns: ${totalTransaaction}`, { x: 140, y: 130, fontSize:15 ,attributes:{fill:"#1d6fff"} });
+    // console.log(path_svg);
 
     const svg = `
         <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
@@ -97,7 +103,7 @@ export async function POST(req: NextRequest) {
         const color = getColor(count);
         return `<rect x="${x}" y="${y}" width="${daySize}" height="${daySize}" fill="${color}" />`;
     }).join('')}
-    <text x="140" y="130" font-size="1.2em" fill="#1d6fff" font-weight="bold" >Total Txns: ${totalTransaaction}</text>
+${path_svg}
         </svg>
     `;
 

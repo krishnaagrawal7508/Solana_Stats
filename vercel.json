@@ -1,7 +1,0 @@
-{
-    "functions": {
-        "src/app/api/generateImage/route.ts": {
-            "includeFiles": "fonts/**"
-        }
-    }
-}
