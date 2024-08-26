@@ -4,6 +4,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import sharp from 'sharp';
 import { generateTransactionData } from '@/utils/transactionData';
 import got from 'got';
+import path from 'path';
+
+path.resolve(process.cwd(), 'fonts', 'fonts.conf');
 
 function bufferToBlob(buffer: Buffer, mimeType: string): Blob {
     return new Blob([buffer], { type: mimeType });
