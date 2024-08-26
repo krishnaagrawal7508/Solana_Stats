@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
     // const endOfYear = new Date(2024, 11, 31)
     console.log("hi");
 
-    const svgLib = TextToSVG.loadSync();
+    const svgLib = TextToSVG.loadSync("./sans_serif.ttf");
     const path_svg = svgLib.getPath(`Total Txns: ${totalTransaaction}`, { x: 140, y: 130, fontSize:15 ,attributes:{fill:"#1d6fff"} });
     // console.log(path_svg);
 
