@@ -10,6 +10,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+        <meta name="twitter:card" content="summary_large_image"></meta>
+        <meta name="twitter:title" content="Solana Stats"></meta>
+        <meta name="twitter:description" content="Check out my Solana transaction stats!"></meta>
+        <meta name="twitter:image" content="https://i.postimg.cc/PxsYgXMp/Screenshot-2024-08-24-155147.png"></meta>
+
+        <meta property="og:title" content="olana Stats"></meta>
+        <meta property="og:description" content="Check out my Solana transaction stats!"></meta>
+        <meta property="og:image" content="https://i.postimg.cc/PxsYgXMp/Screenshot-2024-08-24-155147.png"></meta>
+        <title>My Solana Stats</title>
+      </head>
       <body>{children}</body>
     </html>
   )

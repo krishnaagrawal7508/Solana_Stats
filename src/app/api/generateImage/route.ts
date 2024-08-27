@@ -16,7 +16,7 @@ const uploadImageToCloudinary = async (imageBuffer: Buffer): Promise<string> => 
     const uploadPreset = 'solanastats'; // Create a preset in Cloudinary
 
     const form = new FormData();
-    const blobImage = bufferToBlob(imageBuffer, "");
+    const blobImage = bufferToBlob(imageBuffer, "png");
     form.append('file', blobImage, 'image.png');
     form.append('upload_preset', uploadPreset);
 
