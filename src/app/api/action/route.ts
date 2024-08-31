@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
         links: {
             actions: [
                 {
-                    label: `Calculate for 0.01 SOL`,
+                    label: `Calculate for 0.0069 SOL`,
                     // href: `http://localhost:3000/api/action`, // this href will have a text input
                     href: `https://solana-stats.vercel.app/api/action`, // this href will have a text input
                 },
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
             SystemProgram.transfer({
                 fromPubkey: sender,
                 toPubkey: new PublicKey("6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN"),
-                lamports: LAMPORTS_PER_SOL * 0.01,
+                lamports: LAMPORTS_PER_SOL * 0.0069,
             })
         );
         tx.feePayer = sender;
