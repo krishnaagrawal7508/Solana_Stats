@@ -79,9 +79,9 @@ export async function POST(req: NextRequest) {
     // const startOfYear = new Date(2024, 0, 1);
     // const endOfYear = new Date(2024, 11, 31)
 
-    const path_to = path.join(process.cwd(),"public","assets","sans_serif.ttf");
+    const path_to = path.join(process.cwd(), "public", "assets", "sans_serif.ttf");
     const svgLib = TextToSVG.loadSync(path_to);
-    const path_svg = svgLib.getPath(`Total Txns: ${totalTransaaction}`, { x: 140, y: 130, fontSize:15 ,attributes:{fill:"#1d6fff"} });
+    const path_svg = svgLib.getPath(`Total Txns: ${totalTransaaction}`, { x: 140, y: 130, fontSize: 15, attributes: { fill: "#1d6fff" } });
 
     const svg = `
         <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
