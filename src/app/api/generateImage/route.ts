@@ -78,21 +78,17 @@ export async function POST(req: NextRequest) {
     // Ensure all days of the year are included, even if there are no transactions
     // const startOfYear = new Date(2024, 0, 1);
     // const endOfYear = new Date(2024, 11, 31)
-    console.log("hi");
 
     const path_to = path.join(process.cwd(),"public","assets","sans_serif.ttf");
     const svgLib = TextToSVG.loadSync(path_to);
     const path_svg = svgLib.getPath(`Total Txns: ${totalTransaaction}`, { x: 140, y: 130, fontSize:15 ,attributes:{fill:"#1d6fff"} });
-    // console.log(path_svg);
 
     const svg = `
         <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
             ${Object.entries(transactionData).map(([date, countObj], index) => {
-        // console.log(date);
 
         const [dateString, count] = Object.entries(countObj)[0] as [string, number];
         const [year, month, day] = dateString.split('-').map(Number);
-        // console.log(count);
 
         const date__ = new Date(year, month - 1, day);
         const dayTotal = getDaysFromStartOfYear(date__);
