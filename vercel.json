@@ -1,9 +1,9 @@
 {
     "functions": {
-        "api/generateImage.js": {
+        "api/generateImage": {
             "maxDuration": 60
         },
-        "api/action.js": {
+        "api/action": {
             "maxDuration": 60
         }
     }
