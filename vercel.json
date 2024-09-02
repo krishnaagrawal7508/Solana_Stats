@@ -1,10 +1,7 @@
 {
     "functions": {
-        "api/generateImage": {
-            "maxDuration": 60
-        },
-        "api/action": {
-            "maxDuration": 60
-        }
+      "app/api/**/*": {
+        "maxDuration": 30 
+      }
     }
-}
+  }
