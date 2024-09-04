@@ -14,8 +14,9 @@ import {
     createPostResponse,
     ActionGetResponse,
 } from "@solana/actions";
-import { getCompletedAction } from "../../helper";
+import { getCompletedAction, getNextAction } from "../../helper";
 import { config } from "dotenv";
+// import { Metaplex, keypairIdentity, bundlrStorage } from '@metaplex-foundation/js';
 
 config();
 
@@ -57,6 +58,24 @@ export async function POST(req: NextRequest) {
         const sender = new PublicKey(body.account);
         const senderaddress = sender.toBase58();
 
+        const { searchParams } = new URL(req.url);
+        const url = searchParams.get("Url") as string;
+
+        if (url != null) {
+            const check = url.substring(0, 50);
+            if (check === "https://res.cloudinary.com/dy075nvxm/image/upload/") {
+                return NextResponse.json("", {
+                    headers: ACTIONS_CORS_HEADERS,
+                });
+            }
+            else {
+                return new Response("An error occured", {
+                    status: 400,
+                    headers: ACTIONS_CORS_HEADERS,
+                });
+            }
+        }
+
         const tx: Transaction = new Transaction().add(
             SystemProgram.transfer({
                 fromPubkey: sender,
@@ -83,7 +102,7 @@ export async function POST(req: NextRequest) {
             fields: {
                 links: {
                     // any condition to determine the next action
-                    next: getCompletedAction(data.url),
+                    next: getNextAction(data.url),
                 },
                 transaction: tx,
                 message: `Done!`,
