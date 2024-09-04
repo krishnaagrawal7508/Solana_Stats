@@ -14,12 +14,16 @@ import {
   createPostResponse,
   ActionGetResponse,
 } from '@solana/actions';
-import { getCompletedAction } from '../../helper';
+import { getCompletedAction, getNextAction } from '../../helper';
+import { config } from 'dotenv';
+// import { Metaplex, keypairIdentity, bundlrStorage } from '@metaplex-foundation/js';
+
+config();
 
 // const connection = new Connection("https://devnet.helius-rpc.com/?api-key=3756ece7-8ccb-4586-bb9d-9637825f3395");
-const connection = new Connection(
-  'https://mainnet.helius-rpc.com/?api-key=3756ece7-8ccb-4586-bb9d-9637825f3395'
-);
+const secureRpcUrl = process.env.Helius_SECURE_RPC_URL as string;
+const connection = new Connection(secureRpcUrl);
+// const connection = new Connection("https://mainnet.helius-rpc.com/?api-key=3756ece7-8ccb-4586-bb9d-9637825f3395");
 
 export async function GET(req: NextRequest) {
   let response: ActionGetResponse = {
@@ -54,6 +58,23 @@ export async function POST(req: NextRequest) {
     const sender = new PublicKey(body.account);
     const senderaddress = sender.toBase58();
 
+    const { searchParams } = new URL(req.url);
+    const url = searchParams.get('Url') as string;
+
+    if (url != null) {
+      const check = url.substring(0, 50);
+      if (check === 'https://res.cloudinary.com/dy075nvxm/image/upload/') {
+        return NextResponse.json('', {
+          headers: ACTIONS_CORS_HEADERS,
+        });
+      } else {
+        return new Response('An error occured', {
+          status: 400,
+          headers: ACTIONS_CORS_HEADERS,
+        });
+      }
+    }
+
     const tx: Transaction = new Transaction().add(
       SystemProgram.transfer({
         fromPubkey: sender,
@@ -83,7 +104,7 @@ export async function POST(req: NextRequest) {
       fields: {
         links: {
           // any condition to determine the next action
-          next: getCompletedAction(data.url, data.number_of_txns),
+          next: getNextAction(data.url),
         },
         transaction: tx,
         message: `Done!`,
