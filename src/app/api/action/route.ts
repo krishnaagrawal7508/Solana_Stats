@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
         {
           label: `Calculate for 0.0069 SOL`,
           // href: `http://localhost:3000/api/action`, // this href will have a text input
-          href: `https://solana-stats.vercel.app/api/action`, // this href will have a text input
+          href: `${process.env.URL}/api/action`, // this href will have a text input
         },
       ],
     },
@@ -84,18 +84,15 @@ export async function POST(req: NextRequest) {
     );
     tx.feePayer = sender;
 
-    const response = await fetch(
-      'https://solana-stats.vercel.app/api/generateImage',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          wallet: senderaddress,
-        }),
-      }
-    );
+    const response = await fetch(`${process.env.URL}/api/generateImage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        wallet: senderaddress,
+      }),
+    });
     const data = await response.json();
     console.log(data.url);
     tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
