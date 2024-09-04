@@ -20,7 +20,7 @@ const TransactionsHeatmap: React.FC = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            wallet: '52nCnLjs2ArzLyWDe97F9DgkjUiAUi6mseaLMqbWr1Ng',
+            wallet: 'FkaHjeKxxVj4gzXmzeq4vsJEgWNRKCEjefFDQvuy6sGi',
           }), // Replace with actual wallet address
         });
 
@@ -44,9 +44,8 @@ const TransactionsHeatmap: React.FC = () => {
   }, []);
 
   return (
-    <div className='bg-[#1D5DFE] h-screen w-full'>
-      <div className='w-[500px] mx-auto'>
-        <h1 className='text-2xl font-bold mb-4 text-white'>Solana Stats</h1>
+    <div className='bg-white h-screen w-full'>
+      <div className='w-[500px] m-auto h-screen flex items-center justify-center'>
         {loading && <p className='text-white'>Loading...</p>}
         {error && <p className='text-red-500'>{error}</p>}
         {imageUrl && (
@@ -56,12 +55,8 @@ const TransactionsHeatmap: React.FC = () => {
               width={2000}
               height={2000}
               alt='Transactions Heatmap'
-              className='w-full rounded-lg'
+              className='w-full rounded-lg border border-white'
             />
-            <p className='text-white mt-2'>
-              Number of Transactions: {numberOfTxns}
-            </p>
-            <p className='text-white'>Max Transactions: {maxTransactions}</p>
           </div>
         )}
       </div>

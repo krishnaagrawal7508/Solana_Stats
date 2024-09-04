@@ -5,7 +5,6 @@ import sharp from 'sharp';
 import { generateTransactionData } from '@/utils/transactionData';
 import got from 'got';
 import path from 'path';
-import TextToSVG from 'text-to-svg';
 
 function bufferToBlob(buffer: Buffer, mimeType: string): Blob {
   return new Blob([buffer], { type: mimeType });
@@ -33,7 +32,6 @@ const uploadImageToCloudinary = async (
   const data = await response.json();
 
   if (response.ok) {
-    console.log(data.secure_url);
     return data.secure_url; // URL of the uploaded image
   } else {
     throw new Error(`Cloudinary API error: ${data.error.message}`);
@@ -67,6 +65,19 @@ function getDaysFromStartOfYear(date: Date): number {
   return diffInDays + 1; // +1 to include the start day
 }
 
+function formatWalletAddress(wallet: string): string {
+  return `${wallet.slice(0, 4)}...${wallet.slice(-4)}`;
+}
+
+function getUserLevel(totalTransactions: number): number {
+  if (totalTransactions >= 9000) return 6;
+  if (totalTransactions >= 5000) return 4;
+  if (totalTransactions >= 3000) return 3;
+  if (totalTransactions >= 500) return 2;
+  if (totalTransactions >= 0) return 1;
+  return 1;
+}
+
 export async function POST(req: NextRequest) {
   const { wallet } = await req.json();
   const walletAddress = wallet;
@@ -74,16 +85,27 @@ export async function POST(req: NextRequest) {
     return new NextResponse('Wallet address is required', { status: 400 });
   }
 
-  const [transactionData, totalTransaaction] = await generateTransactionData(
-    walletAddress
-  );
-  const daySize = 9; // Size of each day square
-  const gap = 1; // Gap between squares
-  const daysInWeek = 7;
-  const totalWeeks = 35;
+  const [transactionData, totalTransactions, max_transactions] =
+    await generateTransactionData(walletAddress);
 
-  const width = totalWeeks * (daySize + gap) + 30; // Width of the entire year
-  const height = daysInWeek * (daySize + gap) + 100; // Height of the days in a week
+  const compositeOperations: Array<sharp.OverlayOptions & { zIndex: number }> =
+    [];
+
+  function addCompositeOperation(
+    operation: sharp.OverlayOptions,
+    zIndex: number
+  ) {
+    compositeOperations.push({ ...operation, zIndex });
+    compositeOperations.sort((a, b) => a.zIndex - b.zIndex);
+  }
+
+  const daySize = 42; // Size of each day square
+  const gap = 6; // Gap between squares
+  const daysInWeek = 7;
+  const totalWeeks = 32;
+
+  const width = totalWeeks * (daySize + gap); // Width of the entire year
+  const height = daysInWeek * (daySize + gap); // Height of the days in a week
 
   // Ensure all days of the year are included, even if there are no transactions
   // const startOfYear = new Date(2024, 0, 1);
@@ -95,63 +117,211 @@ export async function POST(req: NextRequest) {
     'assets',
     'sans_serif.ttf'
   );
-  const svgLib = TextToSVG.loadSync(path_to);
-  const path_svg = svgLib.getPath(`Total Txns: ${totalTransaaction}`, {
-    x: 140,
-    y: 130,
-    fontSize: 15,
-    attributes: { fill: '#1d6fff' },
-  });
+
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+  ];
+  const weekdays = ['Mon', 'Wed', 'Fri'];
+
+  const HEATMAP_TOP = 382;
+  const HEATMAP_HEIGHT = 600;
 
   const svg = `
-        <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-            ${Object.entries(transactionData)
-              .map(([date, countObj], index) => {
-                const [dateString, count] = Object.entries(countObj)[0] as [
-                  string,
-                  number
-                ];
-                const [year, month, day] = dateString.split('-').map(Number);
-
-                const date__ = new Date(year, month - 1, day);
-                const dayTotal = getDaysFromStartOfYear(date__);
-                const weekIndex = getWeekNumber(date__);
-                const day_index = dayTotal % 7 === 0 ? 7 : dayTotal % 7;
-
-                const x = weekIndex * (daySize + gap);
-                const y = day_index * (daySize + gap);
-                const color = getColor(count);
-                return `<rect x="${x}" y="${y}" width="${daySize}" height="${daySize}" fill="${color}" />`;
-              })
+         <svg width="2000" height="2000" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <clipPath id="rounded-corners">
+                     <rect width="1872" height="572" rx="32" ry="32" />
+                </clipPath>
+                <filter id="glow-effect" x="-50%" y="-50%" width="200%" height="200%">
+                </filter>
+            </defs>
+          <g clip-path="url(#rounded-corners)">
+            <rect width="1872" height="572" fill="#155DD7" />
+            ${months
+              .map(
+                (month, index) => `
+                <text
+                x="${index * (width / 7.3) + 96}"
+                y="72"
+                fill="#FFFFFF"
+                font-size="44"
+                font-weight="bold"
+                font-family="Arial, sans-serif"
+                text-anchor="middle"
+                >${month}</text>
+            `
+              )
               .join('')}
-${path_svg}
+           ${Object.entries(transactionData)
+             .map(([date, countObj], index) => {
+               const [dateString, count] = Object.entries(countObj)[0] as [
+                 string,
+                 number
+               ];
+               const [year, month, day] = dateString.split('-').map(Number);
+               // do not run the code if date is greater than current date
+               if (new Date(year, month - 1, day) > new Date()) {
+                 return '';
+               }
+
+               const date__ = new Date(year, month - 1, day);
+               const dayTotal = getDaysFromStartOfYear(date__);
+               const weekIndex = getWeekNumber(date__);
+               const dayIndex = dayTotal % 7 === 0 ? 7 : dayTotal % 7;
+
+               const x = weekIndex * (daySize + gap) + 16; // Added 16 for padding
+               const y = dayIndex * (daySize + gap) + 64; // Added 96 to account for month labels
+               const color = getColor(count);
+               return `<rect x="${x}" y="${y}" width="${daySize}" height="${daySize}" fill="${color}" rx='8' ry='8'/>`;
+             })
+             .join('')}
+
+             <g transform="translate(68, 480) scale(1.5)">
+               <path fill-rule="evenodd" clip-rule="evenodd" d="M1.22512 12.8642H26.7624C27.082 12.8642 27.3749 12.9982 27.6146 13.2372L31.6622 17.3912C32.4078 18.1642 31.8752 19.4682 30.8101 19.4682H5.27272C4.95322 19.4682 4.66021 19.3352 4.42061 19.0962L0.373015 14.9412C-0.372685 14.1692 0.159916 12.8642 1.22512 12.8642ZM0.373015 7.35217L4.42061 3.19818C4.63361 2.95818 4.95322 2.8252 5.27272 2.8252H30.7834C31.8486 2.8252 32.3812 4.13019 31.6356 4.90219L27.6146 9.05618C27.4015 9.29618 27.082 9.42917 26.7624 9.42917H1.22512C0.159916 9.42917 -0.372685 8.12417 0.373015 7.35217ZM31.6356 24.9542L27.5879 29.1082C27.3483 29.3482 27.0554 29.4812 26.7358 29.4812H1.22512C0.159916 29.4812 -0.372685 28.1762 0.373015 27.4042L4.42061 23.2502C4.63361 23.0102 4.95322 22.8772 5.27272 22.8772H30.7834C31.8486 22.8772 32.3812 24.1822 31.6356 24.9542Z" fill="white"/>
+             </g>
+            <text x="140" y="520" fill="#FFFFFF" font-size="48" font-family="SF-Pro-Rounded-Regular, Arial, sans-serif" font-weight="bold">${formatWalletAddress(
+              walletAddress
+            )}</text>
+            <text x="1750" y="520" fill="#FFFFFF" font-size="48" font-family="SF-Pro-Rounded-Regular, Arial, sans-serif" font-weight="bold" text-anchor="end">${totalTransactions} Txns</text>
+           </g>
         </svg>
     `;
 
-  const fixedImageBuffer = await got(
-    'https://solana-stats.vercel.app/overall_blank.png'
+  const fixedImageBuffer = await got(`${process.env.URL}/empty.png`).buffer();
+
+  const userLevel = getUserLevel(parseInt(totalTransactions.toString()));
+
+  const COMPOSITION_TOP = 756;
+  const COMPOSITION_LEFT = 64;
+
+  // Create an array to hold all composite operations
+  addCompositeOperation(
+    {
+      input: Buffer.from(svg),
+      left: COMPOSITION_LEFT,
+      top: COMPOSITION_TOP,
+    },
+    50
+  );
+
+  const titleBuffer = await got(`${process.env.URL}/solana_stats.png`).buffer();
+  addCompositeOperation(
+    {
+      input: titleBuffer,
+      left: COMPOSITION_LEFT + 648,
+      top: COMPOSITION_TOP - 560,
+    },
+    100
+  );
+
+  const sendStickerBuffer = await got(
+    `${process.env.URL}/stickers/send_sticker.png`
   ).buffer();
+  addCompositeOperation(
+    {
+      input: sendStickerBuffer,
+      left: COMPOSITION_LEFT + 86,
+      top: COMPOSITION_TOP + 750,
+    },
+    100
+  );
 
-  // const fixedImageBuffer = await sharp(temp_buf);
-  const x = (500 - width) / 2;
-  const y = 240;
-
-  const imageBuffer = await sharp(fixedImageBuffer)
-    .resize({ width: 500, height: 500 }) // Adjust size if needed
-    .composite([
+  if (userLevel >= 1) {
+    const sparkStickerBuffer = await got(
+      `${process.env.URL}/stickers/spark_sticker.png`
+    ).buffer();
+    addCompositeOperation(
       {
-        input: Buffer.from(svg),
-        left: x,
-        top: y,
+        input: sparkStickerBuffer,
+        left: COMPOSITION_LEFT + 1610,
+        top: COMPOSITION_TOP - 242,
       },
-    ]) // Overlay the SVG on the fixed image
+      100
+    );
+  }
+  if (userLevel >= 2) {
+    const solanaStickerBuffer = await got(
+      `${process.env.URL}/stickers/solana_sticker.png`
+    ).buffer();
+    addCompositeOperation(
+      {
+        input: solanaStickerBuffer,
+        left: COMPOSITION_LEFT + 100,
+        top: COMPOSITION_TOP - 320,
+      },
+      100
+    );
+  }
+
+  if (userLevel >= 3) {
+    const oposStickerBuffer = await got(
+      `${process.env.URL}/stickers/opos_sticker.png`
+    ).buffer();
+    addCompositeOperation(
+      {
+        input: oposStickerBuffer,
+        left: COMPOSITION_LEFT + 1134,
+        top: COMPOSITION_TOP + 540,
+      },
+      60
+    );
+  }
+
+  if (userLevel >= 4) {
+    const candleStickerBuffer = await got(
+      `${process.env.URL}/stickers/candle_sticker.png`
+    ).buffer();
+    addCompositeOperation(
+      {
+        input: candleStickerBuffer,
+        left: COMPOSITION_LEFT + 580,
+        top: COMPOSITION_TOP + 560,
+      },
+      60
+    );
+  }
+
+  if (userLevel >= 5) {
+    const blinksStickerBuffer = await got(
+      `${process.env.URL}/stickers/blinks_sticker.png`
+    ).buffer();
+    addCompositeOperation(
+      {
+        input: blinksStickerBuffer,
+        left: COMPOSITION_LEFT + 1459,
+        top: COMPOSITION_TOP + 800,
+      },
+      100
+    );
+  }
+
+  const imageBuffer = await sharp({
+    create: {
+      width: 2000,
+      height: 2000,
+      channels: 4,
+      background: { r: 23, g: 100, b: 242, alpha: 1 },
+    },
+  })
+    .composite(compositeOperations.map(({ zIndex, ...op }) => op))
     .png()
     .toBuffer();
 
   try {
-    // Define the file path
     const u = await uploadImageToCloudinary(imageBuffer);
-    return NextResponse.json({ url: u });
+    return NextResponse.json({
+      url: u,
+      number_of_txns: totalTransactions,
+      max_transactions: max_transactions,
+    });
   } catch (error) {
     console.error('Error saving image:', error);
     return new NextResponse('Error saving image', { status: 500 });
@@ -159,8 +329,9 @@ ${path_svg}
 }
 
 const getColor = (transactions: number) => {
-  if (transactions >= 20) return '#1b63fc'; // Dark Blue
-  if (transactions >= 10) return '#7A9CF6'; // Blue
-  if (transactions > 0) return '#c8dbfc'; // light Blue
-  return '#e3edff'; // No transactions (lightest blue)
+  if (transactions >= 20) return '#FFFFFF'; // Dark Blue
+  if (transactions >= 10) return '#A1BBE8'; // Dark Blue
+  if (transactions >= 5) return '#729ADD'; // Blue
+  if (transactions > 1) return '#4177D1'; // light Blue
+  return '#114EB5'; // No transactions (lightest blue)
 };

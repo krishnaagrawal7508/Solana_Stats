@@ -42,7 +42,6 @@ export async function GET(req: NextRequest) {
       ],
     },
   };
-
   return NextResponse.json(response, {
     headers: ACTIONS_CORS_HEADERS,
   });
