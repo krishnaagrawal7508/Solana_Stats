@@ -120,7 +120,7 @@ export async function POST(req: NextRequest) {
   );
   const svgLib = TextToSVG.loadSync(path_to);
   const path_svg_wallet = svgLib.getPath(`${formatWalletAddress(walletAddress)}`, { x: 140, y: 520, fontSize: 48, attributes: { fill: "#FFFFFF", fontWeight: "bold", fontFamily: "SF-Pro-Rounded-Regular, Arial, sans-serif" } });
-  const path_svg_tnxs = svgLib.getPath(`${totalTransactions} Txns`, { x: 1750, y: 520, fontSize: 48, attributes: { fill: "#FFFFFF", fontWeight: "bold", fontFamily: "SF-Pro-Rounded-Regular, Arial, sans-serif", textAnchor: "end" } });
+  const path_svg_tnxs = svgLib.getPath(`${totalTransactions} Txns`, { x: 1620, y: 520, fontSize: 48, attributes: { fill: "#FFFFFF", fontWeight: "bold", fontFamily: "SF-Pro-Rounded-Regular, Arial, sans-serif", textAnchor: "end" } });
 
   const months = [
     'Jan',
@@ -133,7 +133,7 @@ export async function POST(req: NextRequest) {
     'Aug',
     'Sep',
   ];
-  const months_svg_paths = months.map((month, index) => svgLib.getPath(`${month}`, { x: index * (width / 7.3) + 96, y: 72, fontSize: 44, attributes: { fill: "#FFFFFF", fontWeight: "bold", fontFamily: "Arial, sans-serif", textAnchor: "middle" } })).join('');
+  const months_svg_paths = months.map((month, index) => svgLib.getPath(`${month}`, { x: index * (width / 7.5) + 96, y: 72, fontSize: 44, attributes: { fill: "#FFFFFF", fontWeight: "bold", fontFamily: "Arial, sans-serif", textAnchor: "middle" } })).join('');
 
   const weekdays = ['Mon', 'Wed', 'Fri'];
 
