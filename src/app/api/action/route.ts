@@ -28,7 +28,7 @@ const connection = new Connection(secureRpcUrl);
 export async function GET(req: NextRequest) {
   let response: ActionGetResponse = {
     type: 'action',
-    icon: `https://i.postimg.cc/PxsYgXMp/Screenshot-2024-08-24-155147.png`,
+    icon: `https://i.postimg.cc/CxNfSWrc/cover.png`,
     title: 'Check Your Solana Stats',
     description: '',
     label: 'Action A Label',
