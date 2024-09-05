@@ -23,7 +23,7 @@ export const generateTransactionData = async (walletAddress: string) => {
   let allSignatures: ConfirmedSignatureInfo[] = [];
   let fetchedTransactions = await fetchTransactions();
 
-  while (fetchedTransactions.length > 0) {
+  while (fetchedTransactions.length > 0 && fetchedTransactions.length <= 10000) {
     const filtered = fetchedTransactions.filter(
       ({ blockTime }) =>
         blockTime && blockTime >= startOfYear && blockTime <= endOfYear
