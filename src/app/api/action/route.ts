@@ -14,6 +14,7 @@ import {
   createPostResponse,
   ActionGetResponse,
 } from '@solana/actions';
+import { nftMint } from '@/utils/mintNFT';
 import { getCompletedAction, getNextAction } from '../../helper';
 import { config } from 'dotenv';
 // import { Metaplex, keypairIdentity, bundlrStorage } from '@metaplex-foundation/js';
@@ -64,9 +65,31 @@ export async function POST(req: NextRequest) {
     if (url != null) {
       const check = url.substring(0, 50);
       if (check === 'https://res.cloudinary.com/dy075nvxm/image/upload/') {
-        return NextResponse.json('', {
+
+        // const Metadata = {
+        //   name: `Solana Stats ${1}`,
+        //   symbol: "SOLSTATS",
+        //   description: "Flex your ion cahin activities",
+        //   image: url
+        // }
+
+        const tx = await nftMint(sender, url);
+
+        const payload = await createPostResponse({
+          fields: {
+            links: {
+              // any condition to determine the next action
+              next: getCompletedAction(url),
+            },
+            transaction: tx,
+            message: `Done!`,
+          },
+        })
+
+        return NextResponse.json(payload, {
           headers: ACTIONS_CORS_HEADERS,
         });
+
       } else {
         return new Response('An error occured', {
           status: 400,
