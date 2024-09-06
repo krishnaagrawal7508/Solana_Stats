@@ -20,7 +20,7 @@ const TransactionsHeatmap: React.FC = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            wallet: 'FkaHjeKxxVj4gzXmzeq4vsJEgWNRKCEjefFDQvuy6sGi',
+            wallet: '8Fy7yHo7Sn7anUtG7VANLEDxCWbLjku1oBVa4VouEVVP',
           }), // Replace with actual wallet address
         });
 

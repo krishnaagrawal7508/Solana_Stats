@@ -158,7 +158,7 @@ export async function POST(req: NextRequest) {
   const months_svg_paths = months
     .map((month, index) =>
       svgLib.getPath(`${month}`, {
-        x: index * (width / 7.5) + 96,
+        x: index * (width / 7.5) + 80,
         y: 72,
         fontSize: 44,
         attributes: {
@@ -355,9 +355,12 @@ export async function POST(req: NextRequest) {
 }
 
 const getColor = (transactions: number) => {
-  if (transactions >= 20) return '#FFFFFF'; // Dark Blue
-  if (transactions >= 10) return '#A1BBE8'; // Dark Blue
-  if (transactions >= 5) return '#729ADD'; // Blue
-  if (transactions > 1) return '#4177D1'; // light Blue
-  return '#114EB5'; // No transactions (lightest blue)
+  if (transactions >= 50) return '#FFFFFF';
+  if (transactions >= 40) return '#D0DDF4';
+  if (transactions >= 30) return '#A1BBE8';
+  if (transactions >= 20) return '#89ABE3';
+  if (transactions >= 10) return '#729ADD';
+  if (transactions >= 5) return '#4D7ED0';
+  if (transactions > 0) return '#4177D1';
+  return '#114EB5';
 };

@@ -29,13 +29,14 @@ export async function GET(req: NextRequest) {
   let response: ActionGetResponse = {
     type: 'action',
     icon: `https://i.postimg.cc/CxNfSWrc/cover.png`,
-    title: 'Check Your Solana Stats',
-    description: '',
+    title: 'View Your Solana Score and Mint an Exclusive NFT!',
+    description:
+      'Generate a graph of your Solana activity and mint a NFT based on your daily transactions. Show the world your degen side!',
     label: 'Action A Label',
     links: {
       actions: [
         {
-          label: `Calculate for 0.0069 SOL`,
+          label: `Check Solana Score`,
           // href: `http://localhost:3000/api/action`, // this href will have a text input
           href: `${process.env.URL}/api/action`, // this href will have a text input
         },
@@ -78,7 +79,7 @@ export async function POST(req: NextRequest) {
       SystemProgram.transfer({
         fromPubkey: sender,
         toPubkey: new PublicKey('6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN'),
-        lamports: LAMPORTS_PER_SOL * 0.0069,
+        lamports: LAMPORTS_PER_SOL * 0.001,
       })
     );
     tx.feePayer = sender;
