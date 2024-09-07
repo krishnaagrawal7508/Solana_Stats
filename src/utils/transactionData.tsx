@@ -62,6 +62,7 @@ export const generateTransactionData = async (walletAddress: string) => {
   }
 
   let maxStreak = 0;
+  let maxTransactions = 0;
   let currStreak = 0;
 
   for (
@@ -78,6 +79,9 @@ export const generateTransactionData = async (walletAddress: string) => {
       ++currStreak;
       if (maxStreak < currStreak) {
         maxStreak = currStreak
+      }
+      if (maxTransactions < filteredTransactionData[formattedDate]) {
+        maxTransactions = filteredTransactionData[formattedDate];
       }
     }
   }
@@ -97,5 +101,5 @@ export const generateTransactionData = async (walletAddress: string) => {
 
   console.timeEnd('Data Fetch and Processing Time');
 
-  return [formattedData, total_transactions, maxStreak];
+  return [formattedData, total_transactions, maxStreak, maxTransactions];
 };
