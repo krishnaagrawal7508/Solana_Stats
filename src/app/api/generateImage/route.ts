@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
     return new NextResponse('Wallet address is required', { status: 400 });
   }
 
-  const [transactionData, totalTransactions, maxStreak, maxTransactions] =
+  const [transactionData, totalTransactions, maxStreak, maxTransactions, memo_count] =
     await generateTransactionData(walletAddress);
 
   const compositeOperations: Array<sharp.OverlayOptions & { zIndex: number }> =
@@ -189,28 +189,28 @@ export async function POST(req: NextRequest) {
             <rect width="1872" height="572" fill="#155DD7" />
             ${months_svg_paths}
            ${Object.entries(transactionData)
-             .map(([date, countObj], index) => {
-               const [dateString, count] = Object.entries(countObj)[0] as [
-                 string,
-                 number
-               ];
-               const [year, month, day] = dateString.split('-').map(Number);
-               // do not run the code if date is greater than current date
-               if (new Date(year, month - 1, day) > new Date()) {
-                 return '';
-               }
+      .map(([date, countObj], index) => {
+        const [dateString, count] = Object.entries(countObj)[0] as [
+          string,
+          number
+        ];
+        const [year, month, day] = dateString.split('-').map(Number);
+        // do not run the code if date is greater than current date
+        if (new Date(year, month - 1, day) > new Date()) {
+          return '';
+        }
 
-               const date__ = new Date(year, month - 1, day);
-               const dayTotal = getDaysFromStartOfYear(date__);
-               const weekIndex = getWeekNumber(date__);
-               const dayIndex = dayTotal % 7 === 0 ? 7 : dayTotal % 7;
+        const date__ = new Date(year, month - 1, day);
+        const dayTotal = getDaysFromStartOfYear(date__);
+        const weekIndex = getWeekNumber(date__);
+        const dayIndex = dayTotal % 7 === 0 ? 7 : dayTotal % 7;
 
-               const x = weekIndex * (daySize + gap) + 16; // Added 16 for padding
-               const y = dayIndex * (daySize + gap) + 64; // Added 96 to account for month labels
-               const color = getColor(count);
-               return `<rect x="${x}" y="${y}" width="${daySize}" height="${daySize}" fill="${color}" rx='8' ry='8'/>`;
-             })
-             .join('')}
+        const x = weekIndex * (daySize + gap) + 16; // Added 16 for padding
+        const y = dayIndex * (daySize + gap) + 64; // Added 96 to account for month labels
+        const color = getColor(count);
+        return `<rect x="${x}" y="${y}" width="${daySize}" height="${daySize}" fill="${color}" rx='8' ry='8'/>`;
+      })
+      .join('')}
 
              <g transform="translate(68, 480) scale(1.5)">
                <path fill-rule="evenodd" clip-rule="evenodd" d="M1.22512 12.8642H26.7624C27.082 12.8642 27.3749 12.9982 27.6146 13.2372L31.6622 17.3912C32.4078 18.1642 31.8752 19.4682 30.8101 19.4682H5.27272C4.95322 19.4682 4.66021 19.3352 4.42061 19.0962L0.373015 14.9412C-0.372685 14.1692 0.159916 12.8642 1.22512 12.8642ZM0.373015 7.35217L4.42061 3.19818C4.63361 2.95818 4.95322 2.8252 5.27272 2.8252H30.7834C31.8486 2.8252 32.3812 4.13019 31.6356 4.90219L27.6146 9.05618C27.4015 9.29618 27.082 9.42917 26.7624 9.42917H1.22512C0.159916 9.42917 -0.372685 8.12417 0.373015 7.35217ZM31.6356 24.9542L27.5879 29.1082C27.3483 29.3482 27.0554 29.4812 26.7358 29.4812H1.22512C0.159916 29.4812 -0.372685 28.1762 0.373015 27.4042L4.42061 23.2502C4.63361 23.0102 4.95322 22.8772 5.27272 22.8772H30.7834C31.8486 22.8772 32.3812 24.1822 31.6356 24.9542Z" fill="white"/>
@@ -347,7 +347,8 @@ export async function POST(req: NextRequest) {
       url: u,
       number_of_txns: totalTransactions,
       maxStreak: maxStreak,
-      maxTransactions: maxTransactions
+      maxTransactions: maxTransactions,
+      memo_count: memo_count
     });
   } catch (error) {
     console.error('Error saving image:', error);
