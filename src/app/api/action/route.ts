@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
       fields: {
         links: {
           // any condition to determine the next action
-          next: getNextAction(data.url),
+          next: getNextAction(data.url, data.maxStreak),
         },
         transaction: tx,
         message: `Done!`,

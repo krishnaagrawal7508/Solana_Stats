@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
     return new NextResponse('Wallet address is required', { status: 400 });
   }
 
-  const [transactionData, totalTransactions, max_transactions] =
+  const [transactionData, totalTransactions, maxStreak] =
     await generateTransactionData(walletAddress);
 
   const compositeOperations: Array<sharp.OverlayOptions & { zIndex: number }> =
@@ -346,7 +346,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       url: u,
       number_of_txns: totalTransactions,
-      max_transactions: max_transactions,
+      maxStreak: maxStreak,
     });
   } catch (error) {
     console.error('Error saving image:', error);

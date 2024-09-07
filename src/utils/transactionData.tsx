@@ -61,6 +61,9 @@ export const generateTransactionData = async (walletAddress: string) => {
     }
   }
 
+  let maxStreak = 0;
+  let currStreak = 0;
+
   for (
     let date = new Date(2024, 0, 1);
     date <= new Date(2024, 11, 31);
@@ -69,6 +72,13 @@ export const generateTransactionData = async (walletAddress: string) => {
     const formattedDate = date.toISOString().split('T')[0];
     if (!filteredTransactionData[formattedDate]) {
       filteredTransactionData[formattedDate] = 0;
+      currStreak = 0;
+    }
+    else {
+      ++currStreak;
+      if (maxStreak < currStreak) {
+        maxStreak = currStreak
+      }
     }
   }
 
@@ -87,5 +97,5 @@ export const generateTransactionData = async (walletAddress: string) => {
 
   console.timeEnd('Data Fetch and Processing Time');
 
-  return [formattedData, total_transactions];
+  return [formattedData, total_transactions, maxStreak];
 };

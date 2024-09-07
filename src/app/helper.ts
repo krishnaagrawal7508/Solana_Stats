@@ -1,10 +1,10 @@
 import { NextActionLink } from '@solana/actions-spec';
 
-export const getNextAction = (dataURL: string): NextActionLink => {
+export const getNextAction = (dataURL: string, maxStreak:number): NextActionLink => {
   return {
     type: 'inline',
     action: {
-      description: '',
+      description: `Highest Streak: ${maxStreak}`,
       icon: `${dataURL}`,
       label: `Mint NFT`,
       title: 'Flex Your Solana Stats',
