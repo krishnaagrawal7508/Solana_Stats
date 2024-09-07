@@ -4,7 +4,7 @@ export const getNextAction = (dataURL: string, maxStreak:number, maxTransactions
   return {
     type: 'inline',
     action: {
-      description: `Highest Streak: ${maxStreak} \n Maximum Trnasaction in 1 Day: ${maxTransactions}`,
+      description: `Highest Streak: ${maxStreak} \n Maximum Transactions in a Day: ${maxTransactions}`,
       icon: `${dataURL}`,
       label: `Mint NFT`,
       title: 'Flex Your Solana Stats',
