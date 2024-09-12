@@ -29,7 +29,7 @@ const connection = new Connection(secureRpcUrl);
 export async function GET(req: NextRequest) {
   let response: ActionGetResponse = {
     type: 'action',
-    icon: `https://i.postimg.cc/CxNfSWrc/cover.png`,
+    icon: `https://score.sendarcade.fun/cover.png`,
     title: 'View Your Solana Score and Mint an Exclusive NFT!',
     description:
       'Generate a graph of your Solana activity and mint a NFT based on your daily transactions. Show the world your degen side!',

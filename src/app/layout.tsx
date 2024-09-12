@@ -31,7 +31,7 @@ export default function RootLayout({
         ></meta>
         <meta
           name='twitter:image'
-          content='https://i.postimg.cc/PxsYgXMp/Screenshot-2024-08-24-155147.png'
+          content='https://score.sendarcade.fun/cover.png'
         ></meta>
         <meta property='og:title' content='Solana Stats'></meta>
         <meta
@@ -40,11 +40,11 @@ export default function RootLayout({
         ></meta>
         <meta
           property='og:image'
-          content='https://i.postimg.cc/PxsYgXMp/Screenshot-2024-08-24-155147.png'
+          content='https://score.sendarcade.fun/cover.png'
         ></meta>
         <title>My Solana Stats</title>
       </head>
-      <body className='border border-red-500'>{children}</body>
+      <body className=''>{children}</body>
     </html>
   );
 }
