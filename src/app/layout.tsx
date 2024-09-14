@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import localFont from 'next/font/local';
 
@@ -45,6 +46,7 @@ export default function RootLayout({
         <title>My Solana Stats</title>
       </head>
       <body className=''>{children}</body>
+      <SpeedInsights />
     </html>
   );
 }
