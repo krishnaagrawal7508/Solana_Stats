@@ -20,6 +20,7 @@
     "@solana/spl-token": "^0.4.8",
     "@solana/web3.js": "^1.95.3",
     "@types/text-to-svg": "^3.1.4",
+    "@vercel/speed-insights": "^1.0.12",
     "axios": "^1.7.5",
     "dotenv": "^16.4.5",
     "got": "^14.4.2",
