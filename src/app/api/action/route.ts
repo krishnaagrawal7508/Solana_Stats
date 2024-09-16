@@ -110,7 +110,6 @@ export async function POST(req: NextRequest) {
     const data = await response.json();
     console.log(data.url);
     
-    tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
     const tx: Transaction = new Transaction().add(
       SystemProgram.transfer({
         fromPubkey: sender,
@@ -119,6 +118,7 @@ export async function POST(req: NextRequest) {
       })
     );
     tx.feePayer = sender;
+    tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
 
     const payload = await createPostResponse({
       fields: {
