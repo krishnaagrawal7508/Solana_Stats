@@ -26,6 +26,7 @@ export const nftMint = async (
 
 
     try {
+        const collectionMintAddress = new PublicKey("CHB5wmbLjzdpTSLtjTEggRpgY1cVpD2pvr15FYHGa3Ni");
         //creates a signer with the account provided by the body
         const accountPublicKey = new PublicKey(account);
         const signer = createNoopSigner(publicKey(accountPublicKey));
@@ -46,7 +47,10 @@ export const nftMint = async (
             name: "Solana Stats",
             uri: url, //metadata provided by the uploadMetadata in nft_metadata
             sellerFeeBasisPoints: percentAmount(10),
-
+            collection: {
+                verified: false, // This will be verified in the next step
+                key: publicKey(collectionMintAddress), // Collection mint address
+            },
         });
 
 
