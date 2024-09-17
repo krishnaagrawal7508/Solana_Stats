@@ -1,5 +1,3 @@
-
-
 export const GET = async () => {
   const payload = {
     name: "Solana Score",
@@ -10,5 +8,3 @@ export const GET = async () => {
 
   return Response.json(payload, {});
 };
-// ensures cors
-export const OPTIONS = GET;
