@@ -97,16 +97,7 @@ export async function POST(req: NextRequest) {
         });
       }
     }
-
-    const tx: Transaction = new Transaction().add(
-      SystemProgram.transfer({
-        fromPubkey: sender,
-        toPubkey: new PublicKey('6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN'),
-        lamports: LAMPORTS_PER_SOL * 0.001,
-      })
-    );
-    tx.feePayer = sender;
-
+    
     const response = await fetch(`${process.env.URL}/api/generateImage`, {
       method: 'POST',
       headers: {
@@ -118,6 +109,15 @@ export async function POST(req: NextRequest) {
     });
     const data = await response.json();
     console.log(data.url);
+    
+    const tx: Transaction = new Transaction().add(
+      SystemProgram.transfer({
+        fromPubkey: sender,
+        toPubkey: new PublicKey('6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN'),
+        lamports: LAMPORTS_PER_SOL * 0.001,
+      })
+    );
+    tx.feePayer = sender;
     tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
 
     const payload = await createPostResponse({
