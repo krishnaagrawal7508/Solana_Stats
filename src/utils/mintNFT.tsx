@@ -1,5 +1,5 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
-import { createSignerFromKeypair, signerIdentity, generateSigner, percentAmount, createNoopSigner, publicKey, Instruction, KeypairSigner } from "@metaplex-foundation/umi"
+import { signerIdentity, generateSigner, percentAmount, createNoopSigner, publicKey, Instruction } from "@metaplex-foundation/umi"
 import { createNft, mplTokenMetadata } from "@metaplex-foundation/mpl-token-metadata";
 import { mplCore } from "@metaplex-foundation/mpl-core";
 import {
@@ -13,7 +13,8 @@ import { config } from 'dotenv';
 config();
 
 
-const RPC_ENDPOINT = process.env.Helius_SECURE_RPC_URL as string;
+const RPC_ENDPOINTS = process.env.Helius_SECURE_RPC_URLs as string;
+const RPC_ENDPOINT = RPC_ENDPOINTS.split(",")[0];
 const umi = createUmi(RPC_ENDPOINT)
     .use(mplCore())
     .use(mplTokenMetadata())
@@ -26,7 +27,6 @@ export const nftMint = async (
 
 
     try {
-        const collectionMintAddress = new PublicKey("CHB5wmbLjzdpTSLtjTEggRpgY1cVpD2pvr15FYHGa3Ni");
         //creates a signer with the account provided by the body
         const accountPublicKey = new PublicKey(account);
         const signer = createNoopSigner(publicKey(accountPublicKey));
@@ -47,10 +47,7 @@ export const nftMint = async (
             name: "Solana Stats",
             uri: url, //metadata provided by the uploadMetadata in nft_metadata
             sellerFeeBasisPoints: percentAmount(10),
-            collection: {
-                verified: false, // This will be verified in the next step
-                key: publicKey(collectionMintAddress), // Collection mint address
-            },
+
         });
 
 
