@@ -8,8 +8,9 @@ export const GET = async () => {
         apiPath: "/api/action",
       },
       {
+        //for referrer
         pathPattern: "/*",
-        apiPath: "/api/action",
+        apiPath: "/api/action/*",
       },
       // fallback route
       {
