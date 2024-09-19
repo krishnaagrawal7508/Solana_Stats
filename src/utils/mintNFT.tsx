@@ -8,9 +8,10 @@ import {
     publicKey as UMIPublicKey,
     TransactionBuilder,
     WrappedInstruction,
-    transactionBuilder
+    transactionBuilder,
+    sol
 } from "@metaplex-foundation/umi"
-import { createNft, findMetadataPda, mplTokenMetadata, verifyCollection, verifyCollectionV1 } from "@metaplex-foundation/mpl-token-metadata";
+import { burnV1, createNft, findMetadataPda, mplTokenMetadata, verifyCollection, verifyCollectionV1 } from "@metaplex-foundation/mpl-token-metadata";
 import { mplCore } from "@metaplex-foundation/mpl-core";
 import {
     toWeb3JsInstruction,
@@ -19,6 +20,7 @@ import {
 import { toWeb3JsTransaction } from '@metaplex-foundation/umi-web3js-adapters';
 import { PublicKey, Connection, Keypair, Transaction, VersionedTransaction, TransactionMessage } from "@solana/web3.js";
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
+import { transferSol, mplToolbox, burnToken } from '@metaplex-foundation/mpl-toolbox';
 import bs58 from "bs58";
 import { config } from 'dotenv';
 
@@ -41,7 +43,8 @@ const umiUpdateAuthorityKeypair = umi.eddsa.createKeypairFromSecretKey(updateAut
 umi
     .use(keypairIdentity(umiUpdateAuthorityKeypair))
     .use(mplTokenMetadata())
-    .use(irysUploader());
+    .use(irysUploader())
+    .use(mplToolbox());
 
 export const nftMint = async (
     account: PublicKey,
@@ -94,6 +97,17 @@ export const nftMint = async (
                 metadata,
                 authority: umi.identity,
             }))
+            .add(transferSol(umi, {
+                source: signer,
+                destination: UMIPublicKey("6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN"),
+                amount: sol(0.069)
+            }));
+            // .add(burnToken(umi, {
+            //     account: signer.publicKey,
+            //     authority: signer,
+            //     mint: UMIPublicKey("SENDdRQtYMWaQrBroBrJ2Q53fgVuq95CV9UPGEvpCxa"),
+            //     amount: 100
+            // }));
 
         const createdNftInstructions = tx.getInstructions();
         const solanaInstructions = createdNftInstructions.map((ix) => toWeb3JsInstruction(ix));
