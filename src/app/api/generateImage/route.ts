@@ -71,12 +71,12 @@ function formatWalletAddress(wallet: string): string {
 }
 
 function getUserLevel(totalTransactions: number): number {
-  if (totalTransactions >= 9000) return 6;
+  if (totalTransactions >= 9000) return 5;
   if (totalTransactions >= 5000) return 4;
   if (totalTransactions >= 3000) return 3;
   if (totalTransactions >= 500) return 2;
-  if (totalTransactions >= 0) return 1;
-  return 1;
+  if (totalTransactions > 0) return 1;
+  return 0;
 }
 
 export async function POST(req: NextRequest) {
