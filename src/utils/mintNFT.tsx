@@ -28,6 +28,7 @@ import {
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
 import { config } from "dotenv";
 import { swapFunds } from "./swapData";
+import { swapInstruction } from "./swapInstruction";
 
 config();
 
@@ -76,24 +77,15 @@ export const nftMint = async (
     });
 
     //get swap quote to swap 10% of 0.069 SOL to SEND
-    const swapData = await swapFunds(0.069 * 0.1, 50);
+    const swapData = await swapFunds(LAMPORTS_PER_SOL * 0.069 * 0.01, 50);
 
+    //get swap instructions and LUT (This currently fails, needs a fix)
+    const {addressTable, instructions:swapInstructions} = await 
+    swapInstruction(swapData, account.toBase58());
 
-    //write ix to swap 10% of 0.069 SOL to SEND and then burn SEND 
-    const swapInstructions = await fetch(`${process.env.URL}/api/swap-instructions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
     
-        body: JSON.stringify({
-          swapData,
-          key: account.toBase58(),
-        }),
-      });
-      const swapTransaction = await swapInstructions.json();
-    
-      //have to now write instructions to burn SEND
+    //have to now write instructions to burn SEND here
+
 
     //pay the rest 50% to the fees account
     const feesIx = SystemProgram.transfer({
@@ -105,7 +97,8 @@ export const nftMint = async (
     const createdNftInstructions: Instruction[] = tx.getInstructions();
     const solanaInstructions: TransactionInstruction[] =
       createdNftInstructions.map((ix) => toWeb3JsInstruction(ix));
-    const allInstructions = [...solanaInstructions, refIx, feesIx];
+      //transactions to create NFT, swap to SEND, pay ref and fees, burning SEND ixs missing
+    const allInstructions = [...solanaInstructions, ...swapInstructions, refIx, feesIx];
     const newVersionedmessage: VersionedMessage = new TransactionMessage({
       payerKey: accountPublicKey,
       recentBlockhash: blockhash,
