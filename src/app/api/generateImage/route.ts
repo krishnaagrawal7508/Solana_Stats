@@ -348,7 +348,8 @@ export async function POST(req: NextRequest) {
       number_of_txns: totalTransactions,
       maxStreak: maxStreak,
       maxTransactions: maxTransactions,
-      memo_count: memo_count
+      memo_count: memo_count,
+      userLevel: userLevel
     });
   } catch (error) {
     console.error('Error saving image:', error);

@@ -77,6 +77,7 @@ export async function POST(req: NextRequest) {
     //get image (for NFT) url and referrer if any
     const { searchParams } = new URL(req.url);
     const url = searchParams.get("Url") as string;
+    const rarity = searchParams.get("rarity") as string;
     const referralAccount = searchParams.get("ref");
 
     //if url exists then mint NFT
@@ -85,7 +86,8 @@ export async function POST(req: NextRequest) {
       console.log(url, "check");
       if (check === "https://res.cloudinary.com/dy075nvxm/image/upload/") {
 
-        const tx = await nftMint(sender, url);
+        const tx = await nftMint(sender, url, rarity);
+
         const payload = await createPostResponse({
           fields: {
             links: {
@@ -139,7 +141,8 @@ export async function POST(req: NextRequest) {
             data.url,
             data.maxStreak,
             data.maxTransactions,
-            data.memo_count
+            data.memo_count,
+            data.userLevel
           ),
         },
         transaction: tx,

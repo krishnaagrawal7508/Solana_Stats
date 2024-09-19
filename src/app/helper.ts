@@ -1,6 +1,6 @@
 import { NextActionLink } from '@solana/actions-spec';
 
-export const getNextAction = (dataURL: string, maxStreak: number, maxTransactions: number, memo_count: number): NextActionLink => {
+export const getNextAction = (dataURL: string, maxStreak: number, maxTransactions: number, memo_count: number, userLevel: number): NextActionLink => {
   return {
     type: 'inline',
     action: {
@@ -13,7 +13,7 @@ export const getNextAction = (dataURL: string, maxStreak: number, maxTransaction
         actions: [
           {
             label: `Mint NFT`, // button text
-            href: `/api/action?Url=${dataURL}`, // api endpoint
+            href: `/api/action?Url=${dataURL}&Rarity=${userLevel}`, // api endpoint
           },
         ],
       },
