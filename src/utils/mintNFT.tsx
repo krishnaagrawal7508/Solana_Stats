@@ -9,7 +9,8 @@ import {
     TransactionBuilder,
     WrappedInstruction,
     transactionBuilder,
-    sol
+    sol,
+    createSignerFromKeypair
 } from "@metaplex-foundation/umi"
 import { burnV1, createNft, findMetadataPda, mplTokenMetadata, verifyCollection, verifyCollectionV1 } from "@metaplex-foundation/mpl-token-metadata";
 import { mplCore } from "@metaplex-foundation/mpl-core";
@@ -21,6 +22,7 @@ import { toWeb3JsTransaction } from '@metaplex-foundation/umi-web3js-adapters';
 import { PublicKey, Connection, Keypair, Transaction, VersionedTransaction, TransactionMessage } from "@solana/web3.js";
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
 import { transferSol, mplToolbox, burnToken } from '@metaplex-foundation/mpl-toolbox';
+import { swapDATA } from "./swap";
 import bs58 from "bs58";
 import { config } from 'dotenv';
 
@@ -62,6 +64,8 @@ export const nftMint = async (
         umi.use(signerIdentity(signer));
         umi.use(keypairIdentity(umiUpdateAuthorityKeypair));
 
+        const mySigner = createSignerFromKeypair(umi, umiUpdateAuthorityKeypair);
+
         const blockhash = (await umi.rpc.getLatestBlockhash()).blockhash;
 
         //Using umi generates a mint signer
@@ -75,6 +79,8 @@ export const nftMint = async (
         const metadata = findMetadataPda(umi, {
             mint: mint.publicKey
         })
+
+        const sendBurn = await swapDATA();
 
         // Create a NFT Transaction, setting the name, URI, and seller fee basis points. createNft is a method from @metaplex-foundation/mpl-token-metadata lib
         let tx: TransactionBuilder = transactionBuilder()
@@ -100,14 +106,14 @@ export const nftMint = async (
             .add(transferSol(umi, {
                 source: signer,
                 destination: UMIPublicKey("6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN"),
-                amount: sol(0.069)
+                amount: sol(0.0325)
+            }))
+            .add(burnToken(umi, {
+                account: UMIPublicKey("GTMtESNRQFZ5qjoy3Q5y3wz82ZnbmjmM43kx55sbWzgs"),
+                authority: mySigner,
+                mint: UMIPublicKey("SENDdRQtYMWaQrBroBrJ2Q53fgVuq95CV9UPGEvpCxa"),
+                amount: sendBurn
             }));
-            // .add(burnToken(umi, {
-            //     account: signer.publicKey,
-            //     authority: signer,
-            //     mint: UMIPublicKey("SENDdRQtYMWaQrBroBrJ2Q53fgVuq95CV9UPGEvpCxa"),
-            //     amount: 100
-            // }));
 
         const createdNftInstructions = tx.getInstructions();
         const solanaInstructions = createdNftInstructions.map((ix) => toWeb3JsInstruction(ix));
