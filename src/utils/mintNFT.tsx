@@ -29,6 +29,7 @@ import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
 import { config } from "dotenv";
 import { swapFunds } from "./swapData";
 import { swapInstruction } from "./swapInstruction";
+import { burnSend } from "./burninstructions";
 
 config();
 
@@ -84,8 +85,8 @@ export const nftMint = async (
     swapInstruction(swapData, account.toBase58());
 
     
-    //have to now write instructions to burn SEND here
-
+    //get instructions to burn all SEND in wallet
+    const burnIx = await burnSend(account, swapData?.outAmount);
 
     //pay the rest 50% to the fees account
     const feesIx = SystemProgram.transfer({
@@ -98,12 +99,12 @@ export const nftMint = async (
     const solanaInstructions: TransactionInstruction[] =
       createdNftInstructions.map((ix) => toWeb3JsInstruction(ix));
       //transactions to create NFT, swap to SEND, pay ref and fees, burning SEND ixs missing
-    const allInstructions = [...solanaInstructions, ...swapInstructions, refIx, feesIx];
+    const allInstructions = [...solanaInstructions, ...swapInstructions, refIx, feesIx, burnIx];
     const newVersionedmessage: VersionedMessage = new TransactionMessage({
       payerKey: accountPublicKey,
       recentBlockhash: blockhash,
       instructions: allInstructions,
-    }).compileToV0Message();
+    }).compileToV0Message(addressTable);
 
     const newTx = new VersionedTransaction(newVersionedmessage);
     const mintKeypair = toWeb3JsKeypair(mint);
