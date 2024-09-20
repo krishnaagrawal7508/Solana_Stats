@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
       console.log(url, "check");
       if (check === "https://res.cloudinary.com/dy075nvxm/image/upload/") {
 
-        const tx = await nftMint(sender, url, rarity);
+        const tx = await nftMint(sender, url, rarity, referralAccount);
 
         const payload = await createPostResponse({
           fields: {
