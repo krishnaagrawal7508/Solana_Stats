@@ -94,7 +94,7 @@ export const nftMint = async (
     );
 
     //Find an recent blockhash
-    const uri = `https://score.sendarcade.fun/nft.json?url=${url}&?rarity=${rarity}`;
+    const uri = `https://score.sendarcade.fun/nft.json?url=${url}&rarity=${rarity}`;
     const metadata = findMetadataPda(umi, {
       mint: mint.publicKey,
     });
