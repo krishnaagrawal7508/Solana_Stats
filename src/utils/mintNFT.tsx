@@ -132,7 +132,7 @@ export const nftMint = async (
           destination: UMIPublicKey(
             "6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN"
           ),
-          amount: sol(0.0325),
+          amount: sol(0.0055),
         })
       )
       .add(
@@ -141,7 +141,7 @@ export const nftMint = async (
           destination: referralAccount
             ? UMIPublicKey(referralAccount)
             : UMIPublicKey("6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN"),
-          amount: sol(0.0325),
+          amount: sol(0.0055),
         })
       )
       .add(

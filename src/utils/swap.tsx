@@ -9,7 +9,7 @@ export const swapDATA = async () => {
         ).json();
         return quoteResponse;
     };
-    const data = await swapData(34500000);
+    const data = await swapData(11000000);
 
     return data.outAmount;
 }
