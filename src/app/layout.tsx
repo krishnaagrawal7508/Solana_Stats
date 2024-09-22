@@ -32,7 +32,7 @@ export default function RootLayout({
         ></meta>
         <meta
           name='twitter:image'
-          content='https://score.sendarcade.fun/cover.png'
+          content='https://i.ibb.co/XDdrw9g/cover.png'
         ></meta>
         <meta property='og:title' content='Solana Stats'></meta>
         <meta
@@ -41,7 +41,7 @@ export default function RootLayout({
         ></meta>
         <meta
           property='og:image'
-          content='https://score.sendarcade.fun/cover.png'
+          content='https://i.ibb.co/XDdrw9g/cover.png'
         ></meta>
         <title>My Solana Stats</title>
       </head>
