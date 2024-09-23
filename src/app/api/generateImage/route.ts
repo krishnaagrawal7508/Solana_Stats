@@ -33,8 +33,14 @@ const uploadImageToCloudinary = async (
 
   const data = await response.json();
 
+  const url  = data.secure_url;
+  
+  const insertAfter = '/upload/';
+  const position = url.indexOf(insertAfter) + insertAfter.length;
+  const compressedURL = url.slice(0, position) + 'q_auto/' + url.slice(position);
+
   if (response.ok) {
-    return data.secure_url; // URL of the uploaded image
+    return compressedURL; // URL of the uploaded image
   } else {
     throw new Error(`Cloudinary API error: ${data.error.message}`);
   }
