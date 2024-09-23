@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
     if (url != null) {
       const check = url.substring(0, 50);
       console.log(url, "check");
-      if (check === "https://res.cloudinary.com/dy075nvxm/image/upload/") {
+      if (check === "https://res.cloudinary.com/dwcdwoua9/image/upload/") {
 
         const tx = await nftMint(sender, url, rarity, referralAccount);
 

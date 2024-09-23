@@ -14,7 +14,8 @@ function bufferToBlob(buffer: Buffer, mimeType: string): Blob {
 const uploadImageToCloudinary = async (
   imageBuffer: Buffer
 ): Promise<string> => {
-  const cloudName = 'dy075nvxm';
+  // const cloudName = 'dy075nvxm';
+  const cloudName = 'dwcdwoua9';
   const uploadPreset = 'solanastats'; // Create a preset in Cloudinary
 
   const form = new FormData();
