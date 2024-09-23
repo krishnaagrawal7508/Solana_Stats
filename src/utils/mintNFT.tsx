@@ -70,7 +70,7 @@ export const nftMint = async (
   account: PublicKey,
   url: string,
   rarity: string,
-  referralAccount: string | null
+  referralAccount: string
 ): Promise<VersionedTransaction> => {
   try {
     //creates a signer with the account provided by the body
@@ -100,6 +100,13 @@ export const nftMint = async (
     });
 
     const sendBurn = await swapDATA();
+
+    let second;
+    if (referralAccount === "" || referralAccount === null || referralAccount === "null") {
+      second = UMIPublicKey("6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN");
+    } else {
+      second = UMIPublicKey(referralAccount);
+    }
 
     // Create a NFT Transaction, setting the name, URI, and seller fee basis points. createNft is a method from @metaplex-foundation/mpl-token-metadata lib
     let tx: TransactionBuilder = transactionBuilder()
@@ -138,9 +145,7 @@ export const nftMint = async (
       .add(
         transferSol(umi, {
           source: signer,
-          destination: referralAccount
-            ? UMIPublicKey(referralAccount)
-            : UMIPublicKey("6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN"),
+          destination: second,
           amount: sol(0.0055),
         })
       )

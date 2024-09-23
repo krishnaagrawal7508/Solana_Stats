@@ -16,21 +16,17 @@ import { getCompletedAction, getNextAction } from "../../helper";
 import { config } from "dotenv";
 import { statics } from "@/app/statics";
 import { stat } from "fs";
-// import { Metaplex, keypairIdentity, bundlrStorage } from '@metaplex-foundation/js';
 
 config();
 
-// const connection = new Connection(
-//   "https://devnet.helius-rpc.com/?api-key=3756ece7-8ccb-4586-bb9d-9637825f3395"
-// );
 const secureRpcUrl = process.env.Helius_SECURE_RPC_URLs as string;
 const connection = new Connection(secureRpcUrl.split(",")[0]);
-// const connection = new Connection(secureRpcUrl);
-// const connection = new Connection("https://mainnet.helius-rpc.com/?api-key=3756ece7-8ccb-4586-bb9d-9637825f3395");
 
 //entry to blink
 export async function GET(req: NextRequest) {
   const data = new URL(req.url);
+  const { searchParams } = new URL(req.url);
+  const referralAccount = searchParams.get("ref") as string;
   //set metaData
   let response: ActionGetResponse = {
     type: "action",
@@ -42,9 +38,7 @@ export async function GET(req: NextRequest) {
       actions: [
         {
           label: statics.label,
-          // href: "http://localhost:3000/api/action",
-          // Alternative using env variable
-          href: `${process.env.URL}/api/action`,
+          href: `${process.env.URL}/api/action?ref=${referralAccount}`,
         },
       ],
     },
@@ -78,7 +72,8 @@ export async function POST(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const url = searchParams.get("Url") as string;
     const rarity = searchParams.get("Rarity") as string;
-    const referralAccount = searchParams.get("ref");
+    const referralAccount = searchParams.get("ref") as string;
+    console.log(referralAccount);
 
     //if url exists then mint NFT
     if (url != null) {
@@ -140,7 +135,8 @@ export async function POST(req: NextRequest) {
             data.maxStreak,
             data.maxTransactions,
             data.userLevel,
-            data.walletAddress
+            data.walletAddress,
+            referralAccount
           ),
         },
         transaction: tx,

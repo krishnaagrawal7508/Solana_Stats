@@ -1,10 +1,10 @@
 import { NextActionLink } from '@solana/actions-spec';
 
-export const getNextAction = (dataURL: string, maxStreak: number, maxTransactions: number, userLevel: number, walletAddress: any): NextActionLink => {
+export const getNextAction = (dataURL: string, maxStreak: number, maxTransactions: number, userLevel: number, walletAddress: any, referralAccount: string): NextActionLink => {
   return {
     type: 'inline',
     action: {
-      description: `Highest Streak: ${maxStreak} \nMaximum Transactions in a Day: ${maxTransactions} \n\nRefferal Link:\n ${process.env.URL}/api/action?ref=${walletAddress}`,
+      description: `Highest Streak: ${maxStreak} \nMaximum Transactions in a Day: ${maxTransactions} \n\nRefferal Link:\n${process.env.URL}/api/action?ref=${walletAddress}`,
       icon: `${dataURL}`,
       label: `Mint NFT`,
       title: 'Flex Your Solana Stats',
@@ -13,7 +13,7 @@ export const getNextAction = (dataURL: string, maxStreak: number, maxTransaction
         actions: [
           {
             label: `Mint NFT`, // button text
-            href: `/api/action?Url=${dataURL}&Rarity=${userLevel}`, // api endpoint
+            href: `/api/action?Url=${dataURL}&Rarity=${userLevel}&ref=${referralAccount}`, // api endpoint
           },
         ],
       },
