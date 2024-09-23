@@ -58,15 +58,10 @@ export const generateTransactionData = async (walletAddress: string) => {
 
   let total_transactions = allSignatures.length;
 
-  let memo_count = 0;
-
   for (const { blockTime, memo } of allSignatures) {
     if (blockTime) {
       const date = new Date(blockTime * 1000).toISOString().split("T")[0];
       transactionData[date] = (transactionData[date] || 0) + 1;
-    }
-    if (memo != null) {
-      memo_count++;
     }
   }
 
@@ -125,7 +120,6 @@ export const generateTransactionData = async (walletAddress: string) => {
     formattedData,
     total_transactions,
     maxStreak,
-    maxTransactions,
-    memo_count,
+    maxTransactions
   ];
 };

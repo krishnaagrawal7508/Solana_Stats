@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
     //get image (for NFT) url and referrer if any
     const { searchParams } = new URL(req.url);
     const url = searchParams.get("Url") as string;
-    const rarity = searchParams.get("rarity") as string;
+    const rarity = searchParams.get("Rarity") as string;
     const referralAccount = searchParams.get("ref");
 
     //if url exists then mint NFT
@@ -125,10 +125,8 @@ export async function POST(req: NextRequest) {
     const tx: Transaction = new Transaction().add(
       SystemProgram.transfer({
         fromPubkey: sender,
-        toPubkey: referralAccount
-          ? new PublicKey(referralAccount)
-          : new PublicKey("6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN"),
-        lamports: LAMPORTS_PER_SOL * 0.001,
+        toPubkey: new PublicKey("6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN"),
+        lamports: LAMPORTS_PER_SOL * 0.00001,
       })
     );
 
@@ -141,8 +139,8 @@ export async function POST(req: NextRequest) {
             data.url,
             data.maxStreak,
             data.maxTransactions,
-            data.memo_count,
-            data.userLevel
+            data.userLevel,
+            data.walletAddress
           ),
         },
         transaction: tx,
