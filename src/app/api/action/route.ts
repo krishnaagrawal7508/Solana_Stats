@@ -1,39 +1,39 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 import {
   Transaction,
   PublicKey,
   SystemProgram,
   Connection,
   LAMPORTS_PER_SOL,
-} from "@solana/web3.js";
+} from '@solana/web3.js';
 import {
   ACTIONS_CORS_HEADERS,
   createPostResponse,
   ActionGetResponse,
-} from "@solana/actions";
-import { nftMint } from "@/utils/mintNFT";
-import { getCompletedAction, getNextAction } from "../../helper";
-import { config } from "dotenv";
-import { statics } from "@/app/statics";
-import { stat } from "fs";
+} from '@solana/actions';
+import { nftMint } from '@/utils/mintNFT';
+import { getCompletedAction, getNextAction } from '../../helper';
+import { config } from 'dotenv';
+import { statics } from '@/app/statics';
+import { stat } from 'fs';
 
 config();
 
 const secureRpcUrl = process.env.Helius_SECURE_RPC_URLs as string;
-const connection = new Connection(secureRpcUrl.split(",")[0]);
+const connection = new Connection(secureRpcUrl.split(',')[0]);
 
 //entry to blink
 export async function GET(req: NextRequest) {
   const data = new URL(req.url);
   const { searchParams } = new URL(req.url);
-  const referralAccount = searchParams.get("ref") as string;
+  const referralAccount = searchParams.get('ref') as string;
   //set metaData
   let response: ActionGetResponse = {
-    type: "action",
+    type: 'action',
     icon: statics.icon,
     title: statics.title,
     description: statics.description,
-    label: "Action A Label",
+    label: 'Action A Label',
     links: {
       actions: [
         {
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     const body = (await req.json()) as { account: string; signature: string };
 
     if (!body.account) {
-      return new Response("Account not provided", {
+      return new Response('Account not provided', {
         status: 400,
         headers: ACTIONS_CORS_HEADERS,
       });
@@ -70,17 +70,16 @@ export async function POST(req: NextRequest) {
 
     //get image (for NFT) url and referrer if any
     const { searchParams } = new URL(req.url);
-    const url = searchParams.get("Url") as string;
-    const rarity = searchParams.get("Rarity") as string;
-    const referralAccount = searchParams.get("ref") as string;
+    const url = searchParams.get('Url') as string;
+    const rarity = searchParams.get('Rarity') as string;
+    const referralAccount = searchParams.get('ref') as string;
     console.log(referralAccount);
 
     //if url exists then mint NFT
     if (url != null) {
       const check = url.substring(0, 50);
-      console.log(url, "check");
-      if (check === "https://res.cloudinary.com/dwcdwoua9/image/upload/") {
-
+      console.log(url, 'check');
+      if (check === 'https://res.cloudinary.com/dwcdwoua9/image/upload/') {
         const tx = await nftMint(sender, url, rarity, referralAccount);
 
         const payload = await createPostResponse({
@@ -97,7 +96,7 @@ export async function POST(req: NextRequest) {
           headers: ACTIONS_CORS_HEADERS,
         });
       } else {
-        return new Response("An error occured", {
+        return new Response('An error occured', {
           status: 400,
           headers: ACTIONS_CORS_HEADERS,
         });
@@ -106,9 +105,9 @@ export async function POST(req: NextRequest) {
 
     //if no URL, fetch user's transactions and show user the Image
     const response = await fetch(`${process.env.URL}/api/generateImage`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         wallet: senderaddress,
@@ -120,7 +119,7 @@ export async function POST(req: NextRequest) {
     const tx: Transaction = new Transaction().add(
       SystemProgram.transfer({
         fromPubkey: sender,
-        toPubkey: new PublicKey("6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN"),
+        toPubkey: new PublicKey('6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN'),
         lamports: LAMPORTS_PER_SOL * 0.00001,
       })
     );
@@ -135,7 +134,9 @@ export async function POST(req: NextRequest) {
             data.maxStreak,
             data.maxTransactions,
             data.userLevel,
+            data.number_of_txns,
             data.walletAddress,
+            data.userSolanaScore,
             referralAccount
           ),
         },
@@ -149,9 +150,9 @@ export async function POST(req: NextRequest) {
       headers: ACTIONS_CORS_HEADERS,
     });
   } catch (err) {
-    console.log("Error in POST /api/action", err);
-    let message = "An unknown error occurred";
-    if (typeof err == "string") message = err;
+    console.log('Error in POST /api/action', err);
+    let message = 'An unknown error occurred';
+    if (typeof err == 'string') message = err;
     return new Response(message, {
       status: 400,
       headers: ACTIONS_CORS_HEADERS,

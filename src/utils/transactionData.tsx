@@ -1,13 +1,12 @@
-import { Connection, PublicKey, ConfirmedSignatureInfo } from "@solana/web3.js";
-import { config } from "dotenv";
+import { Connection, PublicKey, ConfirmedSignatureInfo } from '@solana/web3.js';
+import { config } from 'dotenv';
 
 export const generateTransactionData = async (walletAddress: string) => {
-  console.time("Data Fetch and Processing Time");
+  console.time('Data Fetch and Processing Time');
   config();
 
-
   const heliusRpcUrls = (process.env.Helius_SECURE_RPC_URLs as string).split(
-    ","
+    ','
   );
 
   //round robin between multiple RPC URLs
@@ -60,7 +59,7 @@ export const generateTransactionData = async (walletAddress: string) => {
 
   for (const { blockTime, memo } of allSignatures) {
     if (blockTime) {
-      const date = new Date(blockTime * 1000).toISOString().split("T")[0];
+      const date = new Date(blockTime * 1000).toISOString().split('T')[0];
       transactionData[date] = (transactionData[date] || 0) + 1;
     }
   }
@@ -86,7 +85,7 @@ export const generateTransactionData = async (walletAddress: string) => {
     date <= new Date(2024, 11, 31);
     date.setDate(date.getDate() + 1)
   ) {
-    const formattedDate = date.toISOString().split("T")[0];
+    const formattedDate = date.toISOString().split('T')[0];
     if (!filteredTransactionData[formattedDate]) {
       filteredTransactionData[formattedDate] = 0;
       currStreak = 0;
@@ -114,12 +113,7 @@ export const generateTransactionData = async (walletAddress: string) => {
   });
   console.log(formattedData.length);
 
-  console.timeEnd("Data Fetch and Processing Time");
+  console.timeEnd('Data Fetch and Processing Time');
 
-  return [
-    formattedData,
-    total_transactions,
-    maxStreak,
-    maxTransactions
-  ];
+  return [formattedData, total_transactions, maxStreak, maxTransactions];
 };

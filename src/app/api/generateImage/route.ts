@@ -33,11 +33,12 @@ const uploadImageToCloudinary = async (
 
   const data = await response.json();
 
-  const url  = data.secure_url;
-  
+  const url = data.secure_url;
+
   const insertAfter = '/upload/';
   const position = url.indexOf(insertAfter) + insertAfter.length;
-  const compressedURL = url.slice(0, position) + 'q_auto/' + url.slice(position);
+  const compressedURL =
+    url.slice(0, position) + 'q_auto/' + url.slice(position);
 
   if (response.ok) {
     return compressedURL; // URL of the uploaded image
@@ -86,6 +87,37 @@ function getUserLevel(totalTransactions: number): number {
   return 0;
 }
 
+function getUserSolanaScore(
+  totalTransactions: number,
+  maxStreak: number,
+  maxTransactions: number
+): number {
+  // Maximum expected values (scaling constants)
+  const k1 = 4000; // Adjust based on expected maximum total transactions
+  const k2 = 100; // Adjust based on expected maximum streak
+  const k3 = 100; // Adjust based on expected maximum daily transactions
+
+  // Calculate each component score
+  const scoreTotalTransactions = (totalTransactions / k1) * 100;
+  const scoreMaxStreak = (maxStreak / k2) * 100;
+  const scoreMaxTransactions = (maxTransactions / k3) * 100;
+
+  // Ensure the scores do not exceed 100
+  const cappedScoreTotalTransactions = Math.min(scoreTotalTransactions, 100);
+  const cappedScoreMaxStreak = Math.min(scoreMaxStreak, 100);
+  const cappedScoreMaxTransactions = Math.min(scoreMaxTransactions, 100);
+
+  // Final score calculation
+  const finalScore =
+    (cappedScoreTotalTransactions +
+      cappedScoreMaxStreak +
+      cappedScoreMaxTransactions) /
+    3;
+
+  // Round to two decimal places
+  return Math.round(finalScore * 100) / 100;
+}
+
 export async function POST(req: NextRequest) {
   const { wallet } = await req.json();
   const walletAddress = wallet;
@@ -107,8 +139,8 @@ export async function POST(req: NextRequest) {
     compositeOperations.sort((a, b) => a.zIndex - b.zIndex);
   }
 
-  const daySize = 42; // Size of each day square
-  const gap = 6; // Gap between squares
+  const daySize = 40; // Size of each day square
+  const gap = 5; // Gap between squares
   const daysInWeek = 7;
   const totalWeeks = 32;
 
@@ -130,7 +162,7 @@ export async function POST(req: NextRequest) {
     `${formatWalletAddress(walletAddress)}`,
     {
       x: 140,
-      y: 520,
+      y: 512,
       fontSize: 48,
       attributes: {
         fill: '#FFFFFF',
@@ -141,7 +173,7 @@ export async function POST(req: NextRequest) {
   );
   const path_svg_tnxs = svgLib.getPath(`${totalTransactions} Txns`, {
     x: 1620,
-    y: 520,
+    y: 512,
     fontSize: 48,
     attributes: {
       fill: '#FFFFFF',
@@ -165,7 +197,7 @@ export async function POST(req: NextRequest) {
   const months_svg_paths = months
     .map((month, index) =>
       svgLib.getPath(`${month}`, {
-        x: index * (width / 7.5) + 80,
+        x: index * (width / 7.5) + 76,
         y: 72,
         fontSize: 44,
         attributes: {
@@ -196,30 +228,30 @@ export async function POST(req: NextRequest) {
             <rect width="1872" height="572" fill="#155DD7" />
             ${months_svg_paths}
            ${Object.entries(transactionData)
-      .map(([date, countObj], index) => {
-        const [dateString, count] = Object.entries(countObj)[0] as [
-          string,
-          number
-        ];
-        const [year, month, day] = dateString.split('-').map(Number);
-        // do not run the code if date is greater than current date
-        if (new Date(year, month - 1, day) > new Date()) {
-          return '';
-        }
+             .map(([date, countObj], index) => {
+               const [dateString, count] = Object.entries(countObj)[0] as [
+                 string,
+                 number
+               ];
+               const [year, month, day] = dateString.split('-').map(Number);
+               // do not run the code if date is greater than current date
+               if (new Date(year, month - 1, day) > new Date()) {
+                 return '';
+               }
 
-        const date__ = new Date(year, month - 1, day);
-        const dayTotal = getDaysFromStartOfYear(date__);
-        const weekIndex = getWeekNumber(date__);
-        const dayIndex = dayTotal % 7 === 0 ? 7 : dayTotal % 7;
+               const date__ = new Date(year, month - 1, day);
+               const dayTotal = getDaysFromStartOfYear(date__);
+               const weekIndex = getWeekNumber(date__);
+               const dayIndex = dayTotal % 7 === 0 ? 7 : dayTotal % 7;
 
-        const x = weekIndex * (daySize + gap) + 16; // Added 16 for padding
-        const y = dayIndex * (daySize + gap) + 64; // Added 96 to account for month labels
-        const color = getColor(count);
-        return `<rect x="${x}" y="${y}" width="${daySize}" height="${daySize}" fill="${color}" rx='8' ry='8'/>`;
-      })
-      .join('')}
+               const x = weekIndex * (daySize + gap) + 16; // Added 16 for padding
+               const y = dayIndex * (daySize + gap) + 64; // Added 96 to account for month labels
+               const color = getColor(count);
+               return `<rect x="${x}" y="${y}" width="${daySize}" height="${daySize}" fill="${color}" rx='8' ry='8'/>`;
+             })
+             .join('')}
 
-             <g transform="translate(68, 480) scale(1.5)">
+             <g transform="translate(68, 470) scale(1.5)">
                <path fill-rule="evenodd" clip-rule="evenodd" d="M1.22512 12.8642H26.7624C27.082 12.8642 27.3749 12.9982 27.6146 13.2372L31.6622 17.3912C32.4078 18.1642 31.8752 19.4682 30.8101 19.4682H5.27272C4.95322 19.4682 4.66021 19.3352 4.42061 19.0962L0.373015 14.9412C-0.372685 14.1692 0.159916 12.8642 1.22512 12.8642ZM0.373015 7.35217L4.42061 3.19818C4.63361 2.95818 4.95322 2.8252 5.27272 2.8252H30.7834C31.8486 2.8252 32.3812 4.13019 31.6356 4.90219L27.6146 9.05618C27.4015 9.29618 27.082 9.42917 26.7624 9.42917H1.22512C0.159916 9.42917 -0.372685 8.12417 0.373015 7.35217ZM31.6356 24.9542L27.5879 29.1082C27.3483 29.3482 27.0554 29.4812 26.7358 29.4812H1.22512C0.159916 29.4812 -0.372685 28.1762 0.373015 27.4042L4.42061 23.2502C4.63361 23.0102 4.95322 22.8772 5.27272 22.8772H30.7834C31.8486 22.8772 32.3812 24.1822 31.6356 24.9542Z" fill="white"/>
              </g>
              ${path_svg_wallet}
@@ -348,15 +380,24 @@ export async function POST(req: NextRequest) {
     .png()
     .toBuffer();
 
+  console.log('total transactions - ', totalTransactions);
+
+  const userSolanaScore = getUserSolanaScore(
+    totalTransactions as number,
+    parseInt(maxStreak.toString()),
+    parseInt(maxTransactions.toString())
+  );
+
   try {
     const u = await uploadImageToCloudinary(imageBuffer);
     return NextResponse.json({
       url: u,
-      number_of_txns: totalTransactions,
       maxStreak: maxStreak,
       maxTransactions: maxTransactions,
       userLevel: userLevel,
-      walletAddress: walletAddress
+      number_of_txns: totalTransactions,
+      walletAddress: walletAddress,
+      userSolanaScore,
     });
   } catch (error) {
     console.error('Error saving image:', error);
