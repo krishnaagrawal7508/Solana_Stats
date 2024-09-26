@@ -14,7 +14,6 @@ export const generateTransactionData = async (walletAddress: string) => {
   const getRpcUrl = () => {
     const rpcUrl = heliusRpcUrls[urlIndex];
     urlIndex = (urlIndex + 1) % heliusRpcUrls.length;
-    // console.log(`Using RPC URL: ${rpcUrl}`);
     return rpcUrl;
   };
 
@@ -22,59 +21,33 @@ export const generateTransactionData = async (walletAddress: string) => {
   const startOfYear = new Date(2024, 0, 1).getTime() / 1000;
   const endOfYear = new Date(2024, 11, 31, 23, 59, 59).getTime() / 1000;
 
-  const fetchTransactions = async (
-    beforeSignature?: string
-  ): Promise<ConfirmedSignatureInfo[]> => {
-    const connection = new Connection(getRpcUrl() as string);
-    return connection.getSignaturesForAddress(publicKey, {
-      before: beforeSignature,
-      limit: 1000,
-    });
-  };
+  const url = process.env.specialAPI as string;
 
-  let allSignatures: ConfirmedSignatureInfo[] = [];
-  let fetchedTransactions = await fetchTransactions();
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ "parameters": { "wallet": `${walletAddress}` } }),
+  });
+  const result = await response.json();
+  const dataArray: {
+    block_date: string;
+    wallet: string;
+    number_of_times_signer: number;
+    successful_txns: number;
+    fee_paid_sol: number;
+  }[] = result.query_result.data.rows;
 
-  while (
-    fetchedTransactions.length > 0 &&
-    fetchedTransactions.length <= 10000
-  ) {
-    const filtered = fetchedTransactions.filter(
-      ({ blockTime }) =>
-        blockTime && blockTime >= startOfYear && blockTime <= endOfYear
-    );
-    allSignatures.push(...filtered);
+  let total_transactions = 0;
 
-    if (fetchedTransactions.length < 1000) break;
+  const filteredTransactionData = dataArray.reduce((acc, item) => {
+    acc[`${item.block_date}`] = item.successful_txns;
+    total_transactions += item.successful_txns;
+    return acc;
+  }, {} as Record<string, number>);
 
-    const lastSignature =
-      fetchedTransactions[fetchedTransactions.length - 1].signature;
-
-    fetchedTransactions = await fetchTransactions(lastSignature);
-  }
-
-  const transactionData: Record<string, number> = {};
-
-  let total_transactions = allSignatures.length;
-
-  for (const { blockTime, memo } of allSignatures) {
-    if (blockTime) {
-      const date = new Date(blockTime * 1000).toISOString().split('T')[0];
-      transactionData[date] = (transactionData[date] || 0) + 1;
-    }
-  }
-
-  const filteredTransactionData: Record<string, number> = {};
-
-  for (const [date, count] of Object.entries(transactionData)) {
-    const transactionDate = new Date(date);
-    if (
-      transactionDate >= new Date(2024, 0, 1) &&
-      transactionDate <= new Date(2024, 11, 31)
-    ) {
-      filteredTransactionData[date] = count as number;
-    }
-  }
+  console.log(filteredTransactionData);
 
   let maxStreak = 0;
   let maxTransactions = 0;
