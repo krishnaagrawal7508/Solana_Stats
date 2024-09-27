@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
   }
 
   const [transactionData, totalTransactions, maxStreak, maxTransactions] =
-    await generateTransactionData(walletAddress);
+    await generateTransactionData(walletAddress) as (number | { [x: string]: number; }[])[];
 
   const compositeOperations: Array<sharp.OverlayOptions & { zIndex: number }> =
     [];
