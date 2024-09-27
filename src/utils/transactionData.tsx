@@ -47,7 +47,7 @@ export const generateTransactionData = async (walletAddress: string) => {
     if (result.job) {
       const jobId = result.job.id;
       // Set a timeout for 10 seconds
-      const timeout = 10000; // 10 seconds in milliseconds
+      const timeout = 100000; // 10 seconds in milliseconds
       let startTime = Date.now();
 
       // Poll the API every 1 second to check if the computation is done
