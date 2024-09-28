@@ -32,7 +32,7 @@ export default function RootLayout({
         ></meta>
         <meta
           name='twitter:image'
-          content='https://i.ibb.co/XDdrw9g/cover.png'
+          content='https://i.ibb.co/mHB0Zms/photo-2024-09-28-21-13-19.jpg'
         ></meta>
         <meta property='og:title' content='Solana Stats'></meta>
         <meta
@@ -41,7 +41,7 @@ export default function RootLayout({
         ></meta>
         <meta
           property='og:image'
-          content='https://i.ibb.co/XDdrw9g/cover.png'
+          content='https://i.ibb.co/mHB0Zms/photo-2024-09-28-21-13-19.jpg'
         ></meta>
         <title>My Solana Stats</title>
       </head>

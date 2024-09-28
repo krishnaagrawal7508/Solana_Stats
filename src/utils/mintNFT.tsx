@@ -103,7 +103,7 @@ export const nftMint = async (
 
     let second;
     if (referralAccount === "" || referralAccount === null || referralAccount === "null") {
-      second = UMIPublicKey("6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN");
+      second = UMIPublicKey("ChAdkZB7uJE9Hd6QMCG9W93vf9fyCPFpzCDmmMx3A2Zf");
     } else {
       second = UMIPublicKey(referralAccount);
     }
@@ -137,7 +137,7 @@ export const nftMint = async (
         transferSol(umi, {                // fees to treasury - 0.0055 sol
           source: signer,
           destination: UMIPublicKey(
-            "6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN"
+            "ChAdkZB7uJE9Hd6QMCG9W93vf9fyCPFpzCDmmMx3A2Zf"
           ),
           amount: sol(0.0055),
         })
