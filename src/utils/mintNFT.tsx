@@ -134,7 +134,7 @@ export const nftMint = async (
         })
       )
       .add(
-        transferSol(umi, {
+        transferSol(umi, {                // fees to treasury - 0.0055 sol
           source: signer,
           destination: UMIPublicKey(
             "6PvsTRA31mU3k6uMZ5kWqXH31CtUFpJV5t8Cv8DbZEmN"
@@ -143,13 +143,20 @@ export const nftMint = async (
         })
       )
       .add(
-        transferSol(umi, {
+        transferSol(umi, {                // fees to treasury or refferral - 0.0055 sol
           source: signer,
           destination: second,
           amount: sol(0.0055),
         })
       )
-      .add(
+      .add(                               // fees to burn SEND coin - 0.011 sol
+        transferSol(umi, {
+          source: signer,
+          destination: UMIPublicKey("DrwbtVMaxvvNisf4ZRtVUwHvbanRF3FuQNhEnU65wWWC"),
+          amount: sol(0.011),
+        })
+      )
+      .add(                               // burning SEND coin worth - 0.011 sol
         burnToken(umi, {
           account: UMIPublicKey("GTMtESNRQFZ5qjoy3Q5y3wz82ZnbmjmM43kx55sbWzgs"),
           authority: mySigner,
@@ -157,6 +164,8 @@ export const nftMint = async (
           amount: sendBurn,
         })
       );
+
+    // total = 0.0055 + 0.0055 + 0.011 + 0.02 = 0.042 Sol (approx- paid for a mint) 
 
     const createdNftInstructions = tx.getInstructions();
     const solanaInstructions = createdNftInstructions.map((ix) =>
