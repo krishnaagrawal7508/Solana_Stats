@@ -37,39 +37,12 @@ export const generateTransactionData = async (walletAddress: string) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ "parameters": { "wallet": `${walletAddress}` } }),
+    body: JSON.stringify({"wallet": `${walletAddress}`}),
   });
 
   try {
     // Post data to the API and retrieve the job ID
     const result = await response.json();
-
-    if (result.job) {
-      const jobId = result.job.id;
-      // Set a timeout for 10 seconds
-      const timeout = 100000; // 10 seconds in milliseconds
-      let startTime = Date.now();
-
-      // Poll the API every 1 second to check if the computation is done
-      let jobDone = false;
-      let jobResult = null;
-      while (!jobDone && (Date.now() - startTime) < timeout) {
-        const statusResponse = await checkJobStatus(url, jobId);
-        if (statusResponse.job && statusResponse.job.status === 1 && statusResponse.job.result !== null) {
-          jobDone = true;
-          jobResult = statusResponse; // Store the final result
-        } else {
-          console.log("Job is still processing, waiting another second...");
-          await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second before the next check
-        }
-      }
-      if (jobDone) {
-        console.log("Job completed successfully:", jobResult);
-      } else {
-        console.log("Job did not complete within the 10-second timeout.");
-        throw error;
-      }
-    }
 
     const dataArray: {
       block_date: string;
@@ -77,12 +50,12 @@ export const generateTransactionData = async (walletAddress: string) => {
       number_of_times_signer: number;
       successful_txns: number;
       fee_paid_sol: number;
-    }[] = result.query_result.data.rows;
+    }[] = result;
 
     let total_transactions = 0;
 
     const filteredTransactionData = dataArray.reduce((acc, item) => {
-      acc[`${item.block_date}`] = item.successful_txns;
+      acc[`${item.block_date.split('T')[0]}`] = item.successful_txns;
       total_transactions += item.successful_txns;
       return acc;
     }, {} as Record<string, number>);
