@@ -25,7 +25,6 @@ import {
   toWeb3JsInstruction,
   toWeb3JsKeypair,
 } from "@metaplex-foundation/umi-web3js-adapters";
-import { toWeb3JsTransaction } from "@metaplex-foundation/umi-web3js-adapters";
 import {
   PublicKey,
   Connection,
