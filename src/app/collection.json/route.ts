@@ -1,19 +1,19 @@
 export const GET = async () => {
   const payload = {
-    name: "Solana Score",
-    symbol: "Solana Score",
-    description: "Generate a graph of your Solana activity and mint a NFT based on your daily transactions. Show the world your degen side!",
-    image: "https://score.sendarcade.fun/cover.png",
-    external_url: "https://score.sendarcade.fun/",
-    properties: { 
-      "files": [
+    name: 'Solana Score',
+    symbol: 'Solana Score',
+    description: '',
+    image: 'https://score.sendarcade.fun/cover.png',
+    external_url: 'https://score.sendarcade.fun/',
+    properties: {
+      files: [
         {
-          "uri": "https://score.sendarcade.fun/cover.png",
-          "type": "image/png"
-        }
+          uri: 'https://score.sendarcade.fun/cover.png',
+          type: 'image/png',
+        },
       ],
-    }
-  }
+    },
+  };
 
   return Response.json(payload, {});
 };

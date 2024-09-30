@@ -79,9 +79,9 @@ function formatWalletAddress(wallet: string): string {
 }
 
 function getUserLevel(totalTransactions: number): number {
-  if (totalTransactions >= 9000) return 5;
-  if (totalTransactions >= 5000) return 4;
-  if (totalTransactions >= 3000) return 3;
+  if (totalTransactions >= 2500) return 5;
+  if (totalTransactions >= 1500) return 4;
+  if (totalTransactions >= 1000) return 3;
   if (totalTransactions >= 500) return 2;
   if (totalTransactions > 0) return 1;
   return 0;
@@ -93,9 +93,9 @@ function getUserSolanaScore(
   maxTransactions: number
 ): number {
   // Maximum expected values (scaling constants)
-  const k1 = 4000; // Adjust based on expected maximum total transactions
+  const k1 = 2000; // Adjust based on expected maximum total transactions
   const k2 = 100; // Adjust based on expected maximum streak
-  const k3 = 100; // Adjust based on expected maximum daily transactions
+  const k3 = 80; // Adjust based on expected maximum daily transactions
 
   // Calculate each component score
   const scoreTotalTransactions = (totalTransactions / k1) * 100;
@@ -126,7 +126,10 @@ export async function POST(req: NextRequest) {
   }
 
   const [transactionData, totalTransactions, maxStreak, maxTransactions] =
-    await generateTransactionData(walletAddress) as (number | { [x: string]: number; }[])[];
+    (await generateTransactionData(walletAddress)) as (
+      | number
+      | { [x: string]: number }[]
+    )[];
 
   const compositeOperations: Array<sharp.OverlayOptions & { zIndex: number }> =
     [];
@@ -140,7 +143,7 @@ export async function POST(req: NextRequest) {
   }
 
   const daySize = 40; // Size of each day square
-  const gap = 5; // Gap between squares
+  const gap = 4.5; // Gap between squares
   const daysInWeek = 7;
   const totalWeeks = 32;
 
@@ -193,11 +196,12 @@ export async function POST(req: NextRequest) {
     'Jul',
     'Aug',
     'Sep',
+    'Oct',
   ];
   const months_svg_paths = months
     .map((month, index) =>
       svgLib.getPath(`${month}`, {
-        x: index * (width / 7.5) + 76,
+        x: index * (width / 7.7) + 74,
         y: 72,
         fontSize: 44,
         attributes: {
@@ -406,10 +410,10 @@ export async function POST(req: NextRequest) {
 }
 
 const getColor = (transactions: number) => {
-  if (transactions >= 50) return '#FFFFFF';
-  if (transactions >= 40) return '#D0DDF4';
-  if (transactions >= 30) return '#A1BBE8';
-  if (transactions >= 20) return '#89ABE3';
+  if (transactions >= 30) return '#FFFFFF';
+  if (transactions >= 25) return '#D0DDF4';
+  if (transactions >= 20) return '#A1BBE8';
+  if (transactions >= 15) return '#89ABE3';
   if (transactions >= 10) return '#729ADD';
   if (transactions >= 5) return '#4D7ED0';
   if (transactions > 0) return '#4177D1';
