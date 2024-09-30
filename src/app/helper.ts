@@ -152,7 +152,7 @@ export const getNextAction = (
   };
 };
 
-export const getCompletedAction = (dataURL: string): NextActionLink => {
+export const getCompletedAction = (dataURL: string, walletAddress: any): NextActionLink => {
   return {
     type: 'inline',
     action: {
@@ -160,7 +160,7 @@ export const getCompletedAction = (dataURL: string): NextActionLink => {
       label: `DONE`,
       title: `You minted a pice of your history, show it to everybody 🥳 `,
       description:
-        'To check for more wallets switch the wallet from your wallet extension, retweet for others to also check their scores',
+        `You can share the link to reffer more users and earn NFT mint fees:\nhttps://score.sendarcade.fun?ref=${walletAddress}`,
       type: 'completed',
     },
   };
