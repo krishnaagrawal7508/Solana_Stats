@@ -158,9 +158,9 @@ export const getCompletedAction = (dataURL: string, walletAddress: any): NextAct
     action: {
       icon: `${dataURL}`,
       label: `DONE`,
-      title: `You minted a pice of your history, show it to everybody 🥳 `,
+      title: `You minted a piece of your history, show it to everybody 🥳 `,
       description:
-        `You can share the link to reffer more users and earn NFT mint fees:\nhttps://score.sendarcade.fun?ref=${walletAddress}`,
+        `You can share the link to refer more users and earn fees:\nhttps://score.sendarcade.fun?ref=${walletAddress}`,
       type: 'completed',
     },
   };
